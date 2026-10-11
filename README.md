@@ -173,8 +173,10 @@ routeName: ""                    # 自定义路由名（默认用文件名）
 ### 目录、分类与标签
 
 - 放进子目录就是目录层级：`posts/guide/getting-started.md` → `/posts/guide/getting-started/`
-- 目录显示名可以用 `directoryTitle` 指定（写在同目录任一文章的 frontmatter 里）
-- 以 `_` 开头的文件不会被当作文章（适合放草稿碎片或目录说明）
+- 侧栏「目录树」挂件按文章路径自动生成：**文章节点**的显示名可用该文章的 `directoryTitle` 覆盖，
+  而**目录节点**的显示名就等于目录名本身（例如 `guide`）。想让目录节点也显示中文，
+  可以直接用中文目录名（URL 会变成百分号编码），或者改 `src/utils/directory.ts` 里的命名逻辑
+- 以 `_` 开头的文件不会被当作文章（适合放写作模板或草稿碎片，仓库里的 `posts/_frontmatter-template.md` 就是例子）
 - `category` 写数组就是嵌套分类，侧栏与归档页会按层级展示
 - `tags` 会自动汇总成标签云，点标签进入归档页筛选结果
 
