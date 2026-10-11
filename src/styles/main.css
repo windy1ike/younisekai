@@ -17,7 +17,7 @@
 
 /* 导入相册样式 */
 @import './albums.css' layer(base);
-/* 导入动过渡样式 */
+/* 导入过渡动画样式 */
 @import './transition.css' layer(base);
 
 @plugin '@tailwindcss/typography';
