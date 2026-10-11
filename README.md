@@ -144,6 +144,7 @@ npm run new-post -- "读书笔记" --tags 读书,随笔
 ```yaml
 ---
 title: "文章标题"                # 必填
+directoryTitle: ""               # 选填：侧栏目录树里该文章节点的显示名（留空则用 title）
 description: "一句话摘要"         # 列表卡片、搜索结果、RSS 里显示
 published: 2026-01-01            # 发布日期
 updated: 2026-01-08              # 修改日期（会显示「最后编辑」）
