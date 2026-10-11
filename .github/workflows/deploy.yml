@@ -54,8 +54,12 @@ jobs:
         run: npm run build
         env:
           # 纯静态构建：不设置 ENABLE_CMS_OAUTH，astro.config.mjs 就不会挂 SSR 适配器；
-          # GITHUB_ACTIONS=true 同时让 scripts/build-with-pagefind.cjs 把产物目录判定为 dist/
+          # GITHUB_ACTIONS=true 让 scripts/build-with-pagefind.cjs 把产物目录判定为 dist/
           GITHUB_ACTIONS: "true"
+          # 这里是 GitHub Pages 项目站点：地址带 /younisekai/ 子路径。
+          # 换成自定义域名时把 BASE_PATH 改成 / 并把 SITE_URL 改成 https://你的域名/
+          BASE_PATH: "/younisekai/"
+          SITE_URL: "https://windy1ike.github.io/younisekai/"
 
       - name: 配置 Pages
         uses: actions/configure-pages@v6

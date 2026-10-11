@@ -256,31 +256,43 @@ src/i18n/
 
 ```bash
 npx decap-server        # 另开一个终端
-npm run dev             # 然后访问 http://localhost:4321/admin/
+npm run dev             # 然后访问 http://localhost:4321/studio/
 ```
 
 `.decap.yml` 里的 `local_backend: true` 让后台直接读写本地文件，适合本地编辑。
 
 ### 线上登录（GitHub OAuth）
 
-线上要能登录，需要 OAuth 服务端。本项目用的是 [decap-cms-oauth-astro](https://www.npmjs.com/package/decap-cms-oauth-astro)，它会在站点内提供 `/oauth` 与 `/oauth/callback` 路由 —— 这需要服务端渲染，所以：
+线上要能登录，需要 OAuth 服务端。本项目用的是 [decap-cms-oauth-astro](https://www.npmjs.com/package/decap-cms-oauth-astro)，它会在站点内提供 `/oauth` 与 `/oauth/callback` 路由 —— 这需要服务端渲染，所以要用支持 SSR 的平台（Cloudflare Pages / Vercel / Netlify）。
 
-1. 在 [GitHub Developer Settings](https://github.com/settings/developers) 新建 OAuth App：
-   - **Homepage URL**：你的站点地址，例如 `https://blog.example.com`
-   - **Authorization callback URL**：`https://blog.example.com/oauth/callback`
-2. 在部署平台配置环境变量（本地放 `.env`）：
+**访客与站长的区别**：站点是公开的，但后台只有你能用 —— 访客打开后台地址只会看到一张 GitHub 登录页，既看不到文章列表也改不了任何东西；权限校验发生在 GitHub 那侧（仓库是你的，别人授权不了自己的账号去写你的仓库）。后台地址默认放在 `/studio/` 这个不容易被猜到的路径上，站点里也没有任何链接指向它。
+
+配置步骤：
+
+1. **新建 GitHub OAuth App**：[GitHub → Settings → Developer settings → OAuth Apps → New OAuth App](https://github.com/settings/applications/new)
+   - **Application name**：随意，例如 `younisekai CMS`
+   - **Homepage URL**：你的站点地址，例如 `https://younisekai.pages.dev`
+   - **Authorization callback URL**：站点地址 + `/oauth/callback`，例如 `https://younisekai.pages.dev/oauth/callback`
+   - 注册后点 **Generate a new client secret**，记下 **Client ID** 与 **Client Secret**
+
+2. **在部署平台配置环境变量**（本地调试可写进 `.env`）：
 
    ```env
    ENABLE_CMS_OAUTH=1
    OAUTH_GITHUB_CLIENT_ID=你的 client id
    OAUTH_GITHUB_CLIENT_SECRET=你的 client secret
+   SITE_URL=https://你的站点地址/
+   BASE_PATH=/
    ```
 
-   `ENABLE_CMS_OAUTH=1` 会让 `astro.config.mjs` 挂上 SSR 适配器（Vercel / Netlify / Cloudflare 自动识别），不设置时构建产物是纯静态。
-3. 改 `.decap.yml` 的 `backend`：把 `repo` 换成 `你的用户名/仓库名`，`base_url` 与 `site_domain` 换成你的域名，`branch` 换成你的分支。
-4. 部署到支持 SSR 的平台，访问 `/admin` 即可用 GitHub 账号登录写稿。
+   `ENABLE_CMS_OAUTH=1` 会让 `astro.config.mjs` 挂上 SSR 适配器（Cloudflare / Vercel / Netlify 自动识别），不设置时构建产物是纯静态。
+   后台路由可用 `ADMIN_ROUTE` 改（默认 `/studio`）。
 
-> 只用静态托管（GitHub Pages 等）时，`/admin` 页面依然可以打开，但需要自备 OAuth 代理（把 `base_url` 指向它），或者干脆用上面的本地模式写稿。
+3. **改 `.decap.yml`**：`backend.repo` 填 `你的用户名/仓库名`，`branch` 填你的分支，`site_domain` / `base_url` / `site_url` / `logo_url` 换成你的真实域名。
+
+4. 重新部署，访问「站点地址 + `/studio/`」，用 GitHub 账号登录即可写稿；保存后 Decap 会以你的身份向仓库提交 commit，CI 会自动重新构建并发布。
+
+> 纯静态托管（GitHub Pages 等）没有服务端路由，无法在线登录。那种情况下用编辑器直接改文件，或用上面的本地模式；也可以给静态站点单独挂一个外部 OAuth 代理（把 `base_url` 指向它）。
 
 ## 部署
 
@@ -307,9 +319,36 @@ npm run dev             # 然后访问 http://localhost:4321/admin/
 4. 想用自定义域名，就在 `public/` 下加一个 `CNAME` 文件写上域名，并把 DNS 的 CNAME 记录指向 `<用户名>.github.io`，
    然后把 `siteURL` 改成 `https://你的域名/`、`BASE_PATH` 改回 `"/"`
 
-### Cloudflare Pages / Netlify / Vercel
+### Cloudflare Pages（想用网页后台就选它）
 
-导入仓库即可，构建命令 `npm run build`，输出目录 `dist`，Node 版本 20+（推荐 22）。需要后台在线登录时把 OAuth 环境变量配上。
+Cloudflare Pages 支持服务端渲染，是"在线写稿"最省事的落点（免费额度足够个人博客）：
+
+1. 到 [Cloudflare Dashboard](https://dash.cloudflare.com) → **Workers & Pages → Create → Pages → Connect to Git**，选中你的仓库
+2. 构建设置：
+   - **Framework preset**：Astro
+   - **Build command**：`npm run build`
+   - **Build output directory**：`dist`
+   - **环境变量**（Settings → Environment variables，Production 与 Preview 都加上）：
+     ```
+     ENABLE_CMS_OAUTH=1
+     OAUTH_GITHUB_CLIENT_ID=...     # 见「后台管理」一节
+     OAUTH_GITHUB_CLIENT_SECRET=...
+     SITE_URL=https://<你的项目名>.pages.dev/
+     BASE_PATH=/
+     NODE_VERSION=22
+     ```
+3. 部署完成后你会拿到 `https://<项目名>.pages.dev` —— 把这个地址填进 GitHub OAuth App 的
+   Homepage URL 与 `回调地址 + /oauth/callback`，并同步更新 `.decap.yml` 里的
+   `site_domain` / `base_url` / `site_url` / `logo_url`，再推一次代码
+4. 之后访问 `https://<项目名>.pages.dev/studio/` 就能登录写稿
+
+> 同一个仓库可以同时部署到 GitHub Pages（纯静态，无后台）和 Cloudflare Pages（带后台）：
+> 两边的差别只由 `BASE_PATH` 与 `SITE_URL` 两个环境变量决定，`ENABLE_CMS_OAUTH` 只在 Cloudflare 那侧设置。
+> 想绑自定义域名，在 Cloudflare 的 **Custom domains** 里加域名，然后把 `SITE_URL` 与 `.decap.yml` 的域名一起换掉即可。
+
+### Netlify / Vercel
+
+导入仓库即可，构建命令 `npm run build`，输出目录 `dist`，Node 版本 20+（推荐 22）；需要后台在线登录时按上面 Cloudflare 那节配同样的一组环境变量（`SITE_URL` / `BASE_PATH` / `ENABLE_CMS_OAUTH` / OAuth 凭据）。
 
 ### 自己的服务器
 

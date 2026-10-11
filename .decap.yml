@@ -4,26 +4,35 @@
 # 说明：
 #   1. 这是 Decap CMS 后台的配置，字段要与 src/content.config.ts 的 schema 保持一致；
 #      修改 frontmatter 字段时，请同步更新本文件、src/content.config.ts 与 _frontmatter.json。
-#   2. 后台地址为「站点地址 + /admin/」（例如 https://your-domain.com/admin/）；
-#      在线登录需要配置 GitHub OAuth 并在 astro.config.mjs 中启用 oauth 集成，
-#      详见 .env.example。纯静态部署时后台无法在线登录，可直接用编辑器改文件。
-#   3. 参考自 Twilight (MIT)
+#   2. 后台地址由 astro.config.mjs 的 ADMIN_ROUTE 决定，默认是「站点地址 + /studio/」
+#      （放在不容易被猜到的路径上；站点里没有任何指向它的链接，访客打开也只是一张
+#       GitHub 登录页，改不了任何内容 —— 真正的权限校验在 GitHub 那侧）。
+#   3. 在线登录需要：
+#      · 部署到支持 SSR 的平台（Cloudflare Pages / Vercel / Netlify），并设置环境变量
+#        ENABLE_CMS_OAUTH=1 与 OAUTH_GITHUB_CLIENT_ID / OAUTH_GITHUB_CLIENT_SECRET；
+#      · 一个 GitHub OAuth App，其回调地址必须是「站点地址 + /oauth/callback」；
+#      · 下面的 site_domain / base_url / site_url / logo_url 换成你的真实域名。
+#      详见 README 的「后台管理」一节。
+#   4. 纯静态托管（GitHub Pages 等）没有服务端路由，无法在线登录；
+#      那种情况下用编辑器直接改文件，或用 `npx decap-server` + `npm run dev` 在本地写稿。
+#   5. 参考自 Twilight (MIT)
 # ==============================================================================
 
 # 后台系统配置（GitHub 后端：后台的改动会以 commit 的形式提交到仓库）
 backend:
     name: github
-    repo: yourname/younisekai # 请替换为你的 GitHub 仓库（格式：用户名/仓库名）
-    branch: main # 请替换为你的分支名称
-    site_domain: your-domain.com # 请替换为你的域名（不带协议）
-    base_url: https://your-domain.com # 请替换为你的站点 URL（OAuth 回调使用）
-    auth_endpoint: oauth # OAuth 路由由 decap-cms-oauth-astro 集成提供
+    repo: windy1ike/younisekai # GitHub 仓库（格式：用户名/仓库名）
+    branch: main # 分支名称
+    # ⚠️ 下面三处请替换成你部署后的真实域名（不带协议 / 带协议各一处），改完重新构建即可生效
+    site_domain: your-pages-domain.pages.dev
+    base_url: https://your-pages-domain.pages.dev
+    auth_endpoint: oauth # OAuth 入口，由 decap-cms-oauth-astro 集成提供（astro.config.mjs 的 oauthLoginRoute）
 
-# 后台访问地址，Decap CMS 用它拼接后台与站点之间的链接，请改成自己的域名
-site_url: https://your-domain.com
+# 后台访问地址，Decap CMS 用它拼接后台与站点之间的链接
+site_url: https://your-pages-domain.pages.dev
 
 # 后台左上角 LOGO，可换成自己的图片地址（默认为站点 favicon）
-logo_url: https://your-domain.com/favicon/icon-light.svg
+logo_url: https://your-pages-domain.pages.dev/favicon/icon-light.svg
 
 # 设置后台系统语言 (zh_Hans 简体中文 | en 英文 | ...)
 locale: zh_Hans
@@ -33,7 +42,7 @@ locale: zh_Hans
 media_folder: "public/assets/images"
 public_folder: "/assets/images"
 
-# 本地写稿模式：开启后，在 localhost 上访问 /admin/ 时后台会直连本地文件，
+# 本地写稿模式：开启后，在 localhost 上访问后台（默认 /studio/）时后台会直连本地文件，
 # 不需要 GitHub OAuth。用法：另开一个终端跑 `npx decap-server`，再 `npm run dev`。
 # 线上部署时该选项会被自动忽略（只有 localhost 才会走本地后端）。
 local_backend: true

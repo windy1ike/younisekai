@@ -63,16 +63,25 @@ const adapter = !enableCmsOauth
 /**
  * 站点部署的「基准路径」：子路径部署时所有资源与链接都要带上它。
  *
- *   - 部署在根目录（自定义域名，或仓库名为 <用户名>.github.io）：用 "/"
- *   - GitHub Pages 项目站点 https://<用户名>.github.io/<仓库名>/：用 "/<仓库名>/"
+ * 优先读环境变量 BASE_PATH，方便同一个仓库同时部署到多处而不用改代码：
+ *   - Cloudflare Pages / Vercel / Netlify / 自定义域名（根目录）：BASE_PATH=/
+ *   - GitHub Pages 项目站点 https://<用户名>.github.io/<仓库名>/：BASE_PATH=/<仓库名>/
  *
- * 同时记得把 younisekai.config.yaml 里的 siteURL 改成带上同一前缀的完整地址。
+ * 站点绝对地址同理可用 SITE_URL 覆盖 younisekai.config.yaml 里的 siteURL。
  */
-const BASE_PATH = "/younisekai/";
+const BASE_PATH = process.env.BASE_PATH || "/younisekai/";
+
+/**
+ * 后台管理界面的路由（默认 /admin）。
+ *
+ * 改成不容易被猜到的路径可以少被扫到：站点上不会出现任何指向它的链接，
+ * 访客即使打开也只是一张 GitHub 登录页，改不了任何内容（真正的权限校验在 GitHub 那侧）。
+ */
+const ADMIN_ROUTE = process.env.ADMIN_ROUTE || "/studio";
 
 // Ref: https://astro.build/config
 export default defineConfig({
-    site: siteConfig.siteURL,
+    site: process.env.SITE_URL || siteConfig.siteURL,
     base: BASE_PATH,
     trailingSlash: "always",
     adapter: adapter,
@@ -81,6 +90,9 @@ export default defineConfig({
             configPath: "./.decap.yml", // Decap CMS 配置文件位置
             decapCMSVersion: "3.9.0",
             enable: enableCmsOauth, // 设为 true 时需要 .env 里的 OAuth 凭据
+            adminRoute: ADMIN_ROUTE, // 后台地址：<站点>/studio/
+            oauthLoginRoute: "/oauth", // OAuth 入口，需与 .decap.yml 的 auth_endpoint 一致
+            oauthCallbackRoute: "/oauth/callback", // 必须与 GitHub OAuth App 的回调地址一致
         }),
         swup({
             theme: false,
