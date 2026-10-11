@@ -13,6 +13,7 @@
 		"preview": "astro preview",
 		"check": "astro check",
 		"type-check": "tsc --noEmit --isolatedDeclarations",
+		"set-domain": "node scripts/set-site-domain.mjs",
 		"check-stylus": "node scripts/compile-inline-stylus.cjs",
 		"new-post": "node scripts/new-post.js",
 		"assets": "node scripts/generate-assets.mjs",
