@@ -164,7 +164,9 @@ export const ja: Translation = {
     [Key.diaryTips]: "最新の30件の日記エントリのみを表示",
     [Key.diaryMinutesAgo]: "分前",
     [Key.diaryHoursAgo]: "時間前",
-    [Key.diaryDaysAgo]: "日前",
+    [Key.diaryDaysAgo]: "日前",
+    [Key.diaryEmpty]: "まだ日記がありません",
+    [Key.diaryEmptyDesc]: "日記は短いメモです。管理画面から追加してください。",
 
     // アルバムページ
     [Key.albums]: "アルバム",

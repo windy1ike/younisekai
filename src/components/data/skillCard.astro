@@ -12,7 +12,8 @@ export interface Props {
         icon?: string;
         category: string;
         level: "beginner" | "intermediate" | "advanced" | "expert";
-        experience: string | { years: number; months: number };
+        /** 使用年限（可选）：不填则界面不显示这一项 */
+        experience?: string | { years: number; months: number };
         /** 相关项目 id 列表（数据字段名为 projects，relatedProjects 为兼容旧数据的别名） */
         projects?: string[];
         relatedProjects?: string[];
@@ -118,8 +119,9 @@ const getSizeClasses = (size: string) => {
 const sizeClasses = getSizeClasses(size);
 const skillColor = skill.color || "#3B82F6";
 
-// 经验展示文本
+// 经验展示文本：没有填 experience 时返回空字符串，界面会隐藏这一行
 const getExperienceText = (experience: Props["skill"]["experience"]) => {
+    if (!experience) return "";
     if (typeof experience === "string") return experience;
     const yearsText = `${experience.years}${i18n(I18nKey.skillYears)}`;
     const monthsText =
@@ -128,6 +130,7 @@ const getExperienceText = (experience: Props["skill"]["experience"]) => {
             : "";
     return `${yearsText}${monthsText}`;
 };
+const experienceText = getExperienceText(skill.experience);
 ---
 
 <div class="bg-white dark:bg-slate-800/50 rounded-lg border border-black/10 dark:border-white/10 overflow-hidden hover:shadow-lg transition-all duration-300 group">
@@ -167,12 +170,12 @@ const getExperienceText = (experience: Props["skill"]["experience"]) => {
                 <p class={`text-black/60 dark:text-white/60 mb-3 ${sizeClasses.description}`}>
                     {skill.description}
                 </p>
-                <!-- 经验和进度条 -->
-                {showProgress && (
+                <!-- 经验和进度条：只有填了真实的使用年限才显示，避免出现编造的数字 -->
+                {showProgress && experienceText && (
                     <div class="mb-3">
                         <div class="flex justify-between text-sm mb-1">
                             <span class="text-black/60 dark:text-white/60">{i18n(I18nKey.skillExperience)}</span>
-                            <span class="text-black/80 dark:text-white/80">{getExperienceText(skill.experience)}</span>
+                            <span class="text-black/80 dark:text-white/80">{experienceText}</span>
                         </div>
                         <div class={`w-full bg-gray-200 dark:bg-gray-700 rounded-full ${sizeClasses.progress}`}>
                             <div

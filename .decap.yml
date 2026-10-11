@@ -408,7 +408,8 @@ collections:
                     - { label: "精通", value: "expert" }
             - # 经验时长
                 name: "experience"
-                label: "经验时长"
+                label: "经验时长（可留空）"
+                required: false
                 widget: "object"
                 fields:
                     - { name: "years", label: "年", widget: "number", value_type: "int", min: 0 }

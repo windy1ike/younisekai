@@ -1,13 +1,11 @@
 {
     "name": "Svelte",
-    "description": "编译期的响应式 UI 框架，站点的搜索框、目录树、音乐播放器等交互组件用它实现。",
+    "description": "编译期的响应式 UI 框架：本站的搜索框、目录树、显示设置等交互组件用它实现。",
     "icon": "logos:svelte-icon",
     "category": "frontend",
     "level": "intermediate",
-    "experience": {
-        "years": 1,
-        "months": 4
-    },
-    "projects": ["younisekai"],
+    "projects": [
+        "younisekai"
+    ],
     "color": "#FF3E00"
 }

@@ -9,7 +9,11 @@ export interface Skill {
     icon: string; // Iconify icon name
     category: "ai" | "backend" | "client" | "frontend" | "database" | "engines" | "tools" | "others";
     level: "beginner" | "intermediate" | "advanced" | "expert";
-    experience: {
+    /**
+     * 使用年限（可选）。没有真实数据时**不要填**，
+     * 页面会自动隐藏这一项，而不是显示 0 年。
+     */
+    experience?: {
         years: number;
         months: number;
     };
@@ -66,13 +70,16 @@ export const getAdvancedSkills = () => {
 };
 
 
-// Calculate total years of experience
+// Calculate total years of experience（只统计填了 experience 的技能）
 export const getTotalExperience = () => {
     const totalMonths = skillsData.reduce((total, skill) => {
+        if (!skill.experience) return total;
         return total + skill.experience.years * 12 + skill.experience.months;
     }, 0);
     return {
         years: Math.floor(totalMonths / 12),
         months: totalMonths % 12,
+        /** 是否至少有一项技能填了使用年限 */
+        hasData: skillsData.some((s) => !!s.experience),
     };
 };

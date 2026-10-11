@@ -1,13 +1,11 @@
 {
     "name": "Node.js",
-    "description": "写构建脚本、命令行工具和内容校验脚本的日常工具链，也是 notekit 的运行环境。",
+    "description": "构建脚本与命令行工具的运行环境：图标生成、搜索索引、占位素材生成脚本都跑在它上面。",
     "icon": "logos:nodejs-icon",
     "category": "backend",
     "level": "advanced",
-    "experience": {
-        "years": 2,
-        "months": 8
-    },
-    "projects": ["notekit"],
+    "projects": [
+        "younisekai"
+    ],
     "color": "#339933"
 }

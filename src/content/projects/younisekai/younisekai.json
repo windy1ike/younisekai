@@ -1,14 +1,22 @@
 {
-    "title": "YouniSekai 模板本体",
-    "description": "本站自身：一个带后台管理的静态博客模板，支持嵌套分类、文章加密、复制保护和完整的数据集合页面。",
+    "title": "YouniSekai",
+    "description": "本站自身：一个带网页后台的静态博客，内容全部是仓库里的 Markdown 与 JSON 文件，构建后是纯静态产物，可以直接部署到任何静态托管。",
     "image": "./cover.svg",
     "category": "website",
-    "techStack": ["Astro", "Svelte", "Tailwind CSS", "TypeScript"],
+    "techStack": [
+        "Astro",
+        "Svelte",
+        "Tailwind CSS",
+        "TypeScript"
+    ],
     "status": "in-progress",
-    "demoUrl": "",
+    "demoUrl": "https://kazeyouni.pages.dev",
     "sourceUrl": "",
-    "startDate": "2025-09-15",
+    "startDate": "2026-10-11",
     "endDate": "",
     "featured": true,
-    "tags": ["开源项目", "博客模板"]
+    "tags": [
+        "博客",
+        "静态站点"
+    ]
 }

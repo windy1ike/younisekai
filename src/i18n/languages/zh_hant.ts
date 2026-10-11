@@ -164,7 +164,9 @@ export const zh_hant: Translation = {
     [Key.diaryTips]: "只顯示最近30則日記",
     [Key.diaryMinutesAgo]: "分鐘前",
     [Key.diaryHoursAgo]: "小時前",
-    [Key.diaryDaysAgo]: "天前",
+    [Key.diaryDaysAgo]: "天前",
+    [Key.diaryEmpty]: "還沒有日記",
+    [Key.diaryEmptyDesc]: "日記是隨手記下的短文字，先在後台新增一則吧。",
 
     // 相簿頁面
     [Key.albums]: "相簿",

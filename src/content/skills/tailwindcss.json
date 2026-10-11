@@ -1,13 +1,11 @@
 {
     "name": "Tailwind CSS",
-    "description": "实用类优先的 CSS 框架，用来快速搭出版式、暗色模式与响应式断点。",
+    "description": "实用类优先的 CSS 框架：本站的版式、暗色模式与响应式断点都由它实现。",
     "icon": "logos:tailwindcss-icon",
     "category": "frontend",
     "level": "advanced",
-    "experience": {
-        "years": 2,
-        "months": 1
-    },
-    "projects": ["younisekai"],
+    "projects": [
+        "younisekai"
+    ],
     "color": "#06B6D4"
 }

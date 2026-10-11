@@ -1,0 +1,31 @@
+{
+    "title": "搭建 YouniSekai 站点",
+    "description": "从一个开源模板（Spr-Aachen/Twilight，MIT 许可）出发，重做配置体系、重写全部中文内容，把站点做成纯静态博客，再接上网页后台。",
+    "type": "project",
+    "startDate": "2026-10-11",
+    "endDate": "",
+    "location": "",
+    "organization": "",
+    "position": "",
+    "skills": [
+        "Astro",
+        "Svelte",
+        "Tailwind CSS",
+        "TypeScript"
+    ],
+    "achievements": [
+        "移植并裁剪模板的配置与组件，去掉不需要的子系统",
+        "重写全部中文内容与数据示例",
+        "接入 Sveltia CMS 后台与 GitHub OAuth 登录"
+    ],
+    "links": [
+        {
+            "name": "站点地址",
+            "url": "https://kazeyouni.pages.dev",
+            "type": "project"
+        }
+    ],
+    "icon": "material-symbols:code",
+    "color": "#7C3AED",
+    "featured": true
+}

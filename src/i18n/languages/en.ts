@@ -164,7 +164,9 @@ export const en: Translation = {
     [Key.diaryTips]: "Only show the latest 30 diary entries",
     [Key.diaryMinutesAgo]: "minutes ago",
     [Key.diaryHoursAgo]: "hours ago",
-    [Key.diaryDaysAgo]: "days ago",
+    [Key.diaryDaysAgo]: "days ago",
+    [Key.diaryEmpty]: "No diary entries yet",
+    [Key.diaryEmptyDesc]: "Diary entries are short notes. Add the first one in the CMS.",
 
     // Albums Page
     [Key.albums]: "Albums",

@@ -163,6 +163,8 @@ enum I18nKey {
     diaryMinutesAgo = "diaryMinutesAgo",
     diaryHoursAgo = "diaryHoursAgo",
     diaryDaysAgo = "diaryDaysAgo",
+    diaryEmpty = "diaryEmpty",
+    diaryEmptyDesc = "diaryEmptyDesc",
 
     // 相册页面
     albums = "albums",

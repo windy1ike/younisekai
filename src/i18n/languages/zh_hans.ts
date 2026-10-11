@@ -164,7 +164,9 @@ export const zh_hans: Translation = {
     [Key.diaryTips]: "只展示最近30条日记",
     [Key.diaryMinutesAgo]: "分钟前",
     [Key.diaryHoursAgo]: "小时前",
-    [Key.diaryDaysAgo]: "天前",
+    [Key.diaryDaysAgo]: "天前",
+    [Key.diaryEmpty]: "还没有日记",
+    [Key.diaryEmptyDesc]: "日记是随手记下的短文字，先在后台添加一条吧。",
 
     // 相册页面
     [Key.albums]: "相册",

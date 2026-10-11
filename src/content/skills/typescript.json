@@ -1,13 +1,11 @@
 {
     "name": "TypeScript",
-    "description": "给 JavaScript 加一层类型：内容集合的字段约束、工具函数签名和重构时的安全感都来自它。",
+    "description": "给 JavaScript 加一层类型：内容集合的字段约束、工具函数签名与构建期校验都靠它。",
     "icon": "logos:typescript-icon",
     "category": "frontend",
     "level": "advanced",
-    "experience": {
-        "years": 3,
-        "months": 2
-    },
-    "projects": ["younisekai", "notekit"],
+    "projects": [
+        "younisekai"
+    ],
     "color": "#3178C6"
 }
