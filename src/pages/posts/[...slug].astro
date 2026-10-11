@@ -70,6 +70,16 @@ const lastModified = dayjs(entry.data.updated || entry.data.published)
     .utc()
     .format("YYYY-MM-DDTHH:mm:ss");
 
+// 「上次编辑」卡片只在文章**确实被改过**时才显示：
+// 需要 frontmatter 里有 updated，且它与发布日期不是同一天。
+// 否则卡片会拿发布日期当“编辑时间”，显示成“改于 x 天前”，看起来像改过。
+const showLastModified =
+    postConfig.showLastModified &&
+    !!entry.data.updated &&
+    (!entry.data.published ||
+        dayjs(entry.data.updated).format("YYYY-MM-DD") !==
+            dayjs(entry.data.published).format("YYYY-MM-DD"));
+
 const lastModifiedKeys = [
     I18nKey.lastModifiedPrefix,
     I18nKey.year,
@@ -252,7 +262,7 @@ const jsonLd = {
     </div>
     <!-- 评论 -->
     <Comment post={entry} />
-    {postConfig.showLastModified && (
+    {showLastModified && (
         <>
             <div
                 id="last-modified"

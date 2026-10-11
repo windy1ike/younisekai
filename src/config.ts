@@ -14,6 +14,7 @@ import type {
 } from "./types/config";
 import { LinkPreset } from "./types/config";
 import rawConfig from "../younisekai.config.yaml?raw";
+import rawOverride from "../younisekai.override.yaml?raw";
 
 
 type ConfigFile = {
@@ -29,7 +30,37 @@ type ConfigFile = {
     particle: ParticleConfig;
 };
 
-const config = yaml.load(rawConfig) as ConfigFile;
+/** 是否是普通对象（用于递归合并，数组不算） */
+function isPlainObject(value: unknown): value is Record<string, unknown> {
+    return typeof value === "object" && value !== null && !Array.isArray(value);
+}
+
+/**
+ * 深合并「主配置」与「后台覆盖配置」（younisekai.override.yaml）：
+ *   - 对象递归合并，标量与数组以覆盖配置为准
+ *   - 覆盖配置里的空数组会被忽略（避免后台没填就把主配置的菜单 / 挂件清空）
+ *   - 覆盖配置里没出现的键一律沿用主配置
+ */
+function mergeConfig<T>(base: unknown, override: unknown): T {
+    if (!isPlainObject(override) || !isPlainObject(base)) {
+        return base as T;
+    }
+    const merged: Record<string, unknown> = { ...base };
+    for (const [key, value] of Object.entries(override)) {
+        if (value === undefined || value === null) continue;
+        if (Array.isArray(value) && value.length === 0) continue;
+        if (isPlainObject(value) && isPlainObject(merged[key])) {
+            merged[key] = mergeConfig(merged[key], value);
+        } else {
+            merged[key] = value;
+        }
+    }
+    return merged as T;
+}
+
+const baseConfig = yaml.load(rawConfig) as ConfigFile;
+const overrideConfig = (yaml.load(rawOverride) as Partial<ConfigFile> | undefined) ?? {};
+const config = mergeConfig<ConfigFile>(baseConfig, overrideConfig);
 
 const linkPresetNameMap: Record<string, LinkPreset> = {
     Home: LinkPreset.Home,

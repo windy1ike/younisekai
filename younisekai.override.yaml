@@ -1,0 +1,73 @@
+# ==============================================================================
+# YouniSekai 站点配置 —— 后台可改的部分（Sveltia / Decap CMS 的「站点设置」写的就是这个文件）
+#
+# 为什么单独放一个文件？
+#   younisekai.config.yaml 是带详细中文注释的主配置，适合直接改文件；
+#   而后台编辑器保存时会重写整个文件（注释会丢），所以这里单独放一份「覆盖层」：
+#   后台只改这个文件，主配置的注释与结构保持不动。
+#
+# 合并规则（见 src/config.ts）：
+#   · 本文件里出现的键会覆盖主配置里的同名键（对象递归合并，数组整体替换）
+#   · 留空 / 不写某个键 → 就用主配置里的值
+#   · 空数组（例如 links: []）会被忽略，避免"后台没填就把主配置的菜单清空"
+#     —— 想彻底清空某个列表，请去 younisekai.config.yaml 里删
+#
+# 能在这里改的：站点信息（标题/副标题/关键词/主题色相/默认深浅色）、导航菜单、
+#              侧栏挂件、资料卡、公告
+# 仍要改主配置的：壁纸、字体、加载页、文章卡片样式、许可证、评论服务、页脚、粒子特效
+# ==============================================================================
+
+# 下面是可选项的写法示例（默认全部注释掉，需要时在后台里改，或取消注释直接改文件）
+
+# site:
+#     title: "YouniSekai"
+#     subtitle: "异世界手记"
+#     keywords: ["YouniSekai", "KazeYouni", "博客"]
+#     themeColor:
+#         hue: 265
+#     defaultTheme: "dark"
+
+# navbar:
+#     # 菜单项：name 名称 / url 链接 / icon 图标（Iconify 名称）/ description 悬停说明
+#     # 也可以直接写预设名："Home" "Archive" "Projects" "Skills" "Timeline" "Diary" "Albums" "About" "Friends"
+#     links:
+#         - { name: "首页", url: "/" }
+#         - { name: "归档", url: "/archive/" }
+#         - name: "展览"
+#           url: "/exhibition/"
+#           icon: "material-symbols:person"
+#           description: "我的作品与记录"
+#           children:
+#               - { name: "项目", url: "/projects/" }
+#               - { name: "相册", url: "/albums/" }
+#         - { name: "关于", url: "/about/" }
+
+# sidebar:
+#     components:
+#         left:
+#             - { type: "directory", position: "sticky" }
+#             - { type: "categories", position: "sticky" }
+#             - { type: "tags", position: "sticky" }
+#         right:
+#             - { type: "profile", position: "top" }
+#             - { type: "announcement", position: "top" }
+#             - { type: "toc", position: "sticky" }
+#             - { type: "statistics", position: "sticky" }
+
+# profile:
+#     avatar: "/assets/images/avatar.svg"
+#     name: "KazeYouni"
+#     bio: "在异世界的间隙里，写点代码，也写点故事。"
+#     links:
+#         - { name: "GitHub", icon: "fa6-brands:github", url: "https://github.com/windy1ike/younisekai" }
+#         - { name: "RSS", icon: "fa6-solid:rss", url: "/rss.xml" }
+
+# announcement:
+#     title: "公告"
+#     content: "欢迎来到 YouniSekai。"
+#     closable: true
+#     link:
+#         enable: true
+#         text: "了解更多"
+#         url: "/about/"
+#         external: false

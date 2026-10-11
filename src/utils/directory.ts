@@ -6,6 +6,7 @@ import { skillsData } from "./skills";
 import { timelineData } from "./timeline";
 import { i18n } from "../i18n/translation";
 import I18nKey from "../i18n/i18nKey";
+import { postConfig } from "@/config";
 
 
 export interface DirectoryNode {
@@ -27,13 +28,21 @@ export async function getDirectoryTree(): Promise<DirectoryNode[]> {
 
     const tree: Record<string, any> = {};
 
+    // 文件夹节点默认显示目录名（例如 posts/guide/xxx.md 会显示 "guide"）。
+    // 想让它显示中文，就在 younisekai.config.yaml 的 post.directoryTitles 里加一条映射：
+    //   directoryTitles:
+    //       guide: "入门指南"
+    const folderTitles = postConfig.directoryTitles ?? {};
+    const folderName = (segment: string) => folderTitles[segment]?.trim() || segment;
+
     function addNode(paths: string[], name: string, url: string) {
         let current = tree;
         for (const part of paths) {
-            if (!current[part]) {
-                current[part] = { name: part, type: 'folder', children: {} };
+            const label = folderName(part);
+            if (!current[label]) {
+                current[label] = { name: label, type: 'folder', children: {} };
             }
-            current = current[part].children;
+            current = current[label].children;
         }
         current[name] = { name, type: 'file', url };
     }

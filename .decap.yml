@@ -172,6 +172,123 @@ collections:
             - { name: "encrypted", label: "启用页面加密", widget: "hidden", required: false }
             - { name: "password", label: "访问密码", widget: "hidden", required: false }
 
+    - # 站点设置（后台改的是 younisekai.override.yaml，不会动带注释的主配置）
+        name: "settings"
+        label: "站点设置"
+        files:
+            - # 站点信息 / 导航菜单 / 侧栏挂件 / 资料卡 / 公告
+                name: "site"
+                label: "站点信息与栏目"
+                file: "younisekai.override.yaml"
+                fields:
+                    # ---------------- 站点信息 ----------------
+                    - label: "站点信息"
+                      name: "site"
+                      widget: "object"
+                      fields:
+                          - { name: "title", label: "站点标题", widget: "string", required: false, hint: "浏览器标签、页头、RSS 里显示的名字" }
+                          - { name: "subtitle", label: "副标题", widget: "string", required: false }
+                          - { name: "keywords", label: "关键词", widget: "list", required: false, hint: "用于 meta keywords，一般填站名与主题词" }
+                          - label: "主题色"
+                            name: "themeColor"
+                            widget: "object"
+                            required: false
+                            fields:
+                                - { name: "hue", label: "色相 (0-360)", widget: "number", value_type: "int", min: 0, max: 360, required: false, hint: "0 红 / 200 青 / 250 蓝绿 / 265 紫罗兰 / 345 粉" }
+                          - { name: "defaultTheme", label: "默认深浅色", widget: "select", options: ["system", "light", "dark"], required: false }
+
+                    # ---------------- 导航菜单 ----------------
+                    - label: "导航菜单（留空则用主配置里的菜单）"
+                      name: "navbar"
+                      widget: "object"
+                      required: false
+                      fields:
+                          - label: "菜单项"
+                            name: "links"
+                            widget: "list"
+                            required: false
+                            summary: "{{fields.name}}"
+                            fields:
+                                - { name: "name", label: "名称", widget: "string" }
+                                - { name: "url", label: "链接", widget: "string", hint: "站内写 /archive/ 这样的路径，站外写完整网址" }
+                                - { name: "icon", label: "图标", widget: "string", required: false, hint: "Iconify 名称，例如 material-symbols:person" }
+                                - { name: "description", label: "说明", widget: "string", required: false, hint: "鼠标悬停时显示" }
+                                - label: "子菜单"
+                                  name: "children"
+                                  widget: "list"
+                                  required: false
+                                  summary: "{{fields.name}}"
+                                  fields:
+                                      - { name: "name", label: "名称", widget: "string" }
+                                      - { name: "url", label: "链接", widget: "string" }
+                                      - { name: "icon", label: "图标", widget: "string", required: false }
+                                      - { name: "description", label: "说明", widget: "string", required: false }
+
+                    # ---------------- 侧栏挂件 ----------------
+                    - label: "侧栏挂件（留空则用主配置里的挂件）"
+                      name: "sidebar"
+                      widget: "object"
+                      required: false
+                      fields:
+                          - label: "左侧栏"
+                            name: "left"
+                            widget: "list"
+                            required: false
+                            summary: "{{fields.type}}"
+                            fields:
+                                - { name: "type", label: "组件", widget: "select", options: ["directory", "categories", "tags", "profile", "announcement", "toc", "statistics"] }
+                                - { name: "position", label: "位置", widget: "select", options: ["top", "sticky"], default: "sticky", required: false }
+                                - { name: "enable", label: "启用", widget: "boolean", default: true, required: false }
+                                - { name: "depth", label: "目录深度（仅目录/分类）", widget: "number", value_type: "int", min: 1, max: 6, required: false }
+                          - label: "右侧栏"
+                            name: "right"
+                            widget: "list"
+                            required: false
+                            summary: "{{fields.type}}"
+                            fields:
+                                - { name: "type", label: "组件", widget: "select", options: ["directory", "categories", "tags", "profile", "announcement", "toc", "statistics"] }
+                                - { name: "position", label: "位置", widget: "select", options: ["top", "sticky"], default: "sticky", required: false }
+                                - { name: "enable", label: "启用", widget: "boolean", default: true, required: false }
+                                - { name: "depth", label: "目录深度（仅目录/分类）", widget: "number", value_type: "int", min: 1, max: 6, required: false }
+
+                    # ---------------- 资料卡 ----------------
+                    - label: "资料卡"
+                      name: "profile"
+                      widget: "object"
+                      required: false
+                      fields:
+                          - { name: "avatar", label: "头像", widget: "image", required: false, hint: "留空则用主配置里的头像" }
+                          - { name: "name", label: "昵称", widget: "string", required: false }
+                          - { name: "bio", label: "简介", widget: "string", required: false }
+                          - label: "社交链接"
+                            name: "links"
+                            widget: "list"
+                            required: false
+                            summary: "{{fields.name}}"
+                            fields:
+                                - { name: "name", label: "名字", widget: "string" }
+                                - { name: "icon", label: "图标", widget: "string", hint: "Iconify 名称，例如 fa6-brands:github" }
+                                - { name: "url", label: "链接", widget: "string" }
+
+                    # ---------------- 公告 ----------------
+                    - label: "公告"
+                      name: "announcement"
+                      widget: "object"
+                      required: false
+                      fields:
+                          - { name: "title", label: "标题", widget: "string", required: false }
+                          - { name: "content", label: "内容", widget: "text", required: false }
+                          - { name: "closable", label: "允许访客关闭", widget: "boolean", default: true, required: false }
+                          - label: "附带链接"
+                            name: "link"
+                            widget: "object"
+                            required: false
+                            fields:
+                                - { name: "enable", label: "启用", widget: "boolean", default: false, required: false }
+                                - { name: "text", label: "链接文本", widget: "string", required: false }
+                                - { name: "url", label: "链接地址", widget: "string", required: false }
+                                - { name: "external", label: "外部链接", widget: "boolean", default: false, required: false }
+
     - # 关于页面（单文件）
         name: "page_about"
         label: "关于页面"

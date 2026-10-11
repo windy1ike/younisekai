@@ -1,5 +1,5 @@
 # ==============================================================================
-# younisekai 站点配置
+# YouniSekai 站点配置
 # ------------------------------------------------------------------------------
 # 1. 配置在构建时由 src/config.ts 读取并做归一化处理，修改后需重新构建 (或重启开发服务器)
 # 2. 每一项都配有中文注释，按注释说明修改即可，不要随意增删层级
@@ -10,14 +10,12 @@
 # 站点配置
 site:
     # 站点 URL（必须以斜杠结尾）
-    # ⚠️ 这是 RSS / Atom / sitemap / canonical / 社交分享卡里用到的绝对地址，务必与真实部署地址一致：
-    #   - 自定义域名：            https://example.com/
-    #   - GitHub Pages 项目站点： https://<用户名>.github.io/<仓库名>/
-    #     （项目站点还要把 astro.config.mjs 里的 base 改成 "/<仓库名>/"）
-    #   - Vercel / Netlify：     平台分配的域名或自定义域名，根路径用 https://xxx.vercel.app/
+    # ⚠️ 这是 RSS / Atom / sitemap / canonical / 社交分享卡里用到的绝对地址，务必与真实部署地址一致
+    # （部署在 Cloudflare Pages / Vercel / 自定义域名时用根路径；子路径部署要带上子路径前缀，
+    #   并同步设置 astro.config.mjs 的 BASE_PATH）
     siteURL: "https://kazeyouni.pages.dev/"
     # 站点标题
-    title: "younisekai"
+    title: "YouniSekai"
     # 站点副标题
     subtitle: "异世界手记"
     # 语言配置
@@ -26,7 +24,8 @@ site:
     lang: "zh_CN"
     # 站点关键词，用于生成 <meta name="keywords">
     keywords:
-        - "younisekai"
+        - "YouniSekai"
+        - "KazeYouni"
         - "异世界手记"
         - "博客"
         - "Astro"
@@ -78,7 +77,7 @@ site:
                 # 在主页显示文本
                 enable: true
                 # 主标题
-                title: "younisekai"
+                title: "YouniSekai"
                 # 副标题，支持单个字符串或字符串数组 (数组会依次轮播)
                 subtitle:
                     - "在星轨尽头，写下每一次思绪的涟漪"
@@ -277,7 +276,7 @@ profile:
     # 头像配置 (相对于 /public 目录)
     avatar: "/assets/images/avatar.svg"
     # 信息配置
-    name: "younisekai"
+    name: "KazeYouni"
     # 简介配置
     bio: "在异世界的间隙里，写点代码，也写点故事。"
     # 链接配置
@@ -288,7 +287,7 @@ profile:
             # 图标
             icon: "fa6-brands:github"
             # 链接 (占位地址，记得改成你自己的仓库)
-            url: "https://github.com/yourname/younisekai"
+            url: "https://github.com/windy1ike/younisekai"
         - # 链接示例 - RSS
             # 名字
             name: "RSS"
@@ -309,7 +308,7 @@ announcement:
     # 公告标题
     title: "异世界公告"
     # 公告内容
-    content: "欢迎来到 younisekai，这里记录着我的代码、文字与旅途。"
+    content: "欢迎来到 YouniSekai，这里记录着我的代码、文字与旅途。"
     # 允许用户关闭公告
     closable: true
     # 链接配置
@@ -339,8 +338,12 @@ post:
             showDefaultCover: true
         # 标题大小 (Tailwind 文本大小类，例如 "text-3xl")
         titleSize: "text-2xl"
-    # 显示"上次编辑"卡片
+    # 显示"上次编辑"卡片（只在文章确实被改过时出现：需要 frontmatter 里有 updated 且与 published 不同）
     showLastModified: true
+    # 侧栏目录树里「文件夹节点」的显示名映射（{ 目录名: 显示名 }）
+    # 不写的话文件夹节点直接显示目录名，例如 posts/guide/xxx.md 显示成 guide
+    directoryTitles:
+        guide: "入门指南"
     # 代码高亮配置
     expressiveCode:
         # 主题

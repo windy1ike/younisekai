@@ -344,6 +344,9 @@ export type PostConfig = {
     };
     // 显示"上次编辑"卡片
     showLastModified: boolean;
+    // 侧栏目录树里「文件夹节点」的显示名映射：{ 目录名: 显示名 }
+    // 不配置时文件夹节点直接显示目录名（例如 guide）
+    directoryTitles?: Record<string, string>;
     // 代码高亮配置
     expressiveCode: {
         // 主题
