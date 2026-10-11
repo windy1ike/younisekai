@@ -1,0 +1,46 @@
+# ==============================================================================
+# 代码与内容检查（不部署，只做质量把关）
+#
+# 为什么需要它：部署由 Cloudflare Pages 负责，构建失败时 Cloudflare 会保留旧版本、
+# 站点不会挂，但你要到部署日志里才能发现问题。这个工作流在 push / PR 时就把
+# 类型错误、content schema 写错、Markdown frontmatter 不合法之类的问题报出来。
+#
+# 注意：这里**不要**设置 ENABLE_CMS_OAUTH，保持纯静态校验；
+# 产物目录判定与部署无关，本工作流不上传任何产物。
+# ==============================================================================
+
+name: Check
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+  workflow_dispatch:
+
+# 只读权限即可
+permissions:
+  contents: read
+
+jobs:
+  check:
+    runs-on: ubuntu-latest
+    steps:
+      - name: 检出仓库
+        uses: actions/checkout@v7
+
+      - name: 安装 Node.js
+        uses: actions/setup-node@v7
+        with:
+          node-version: 22
+          cache: npm
+
+      - name: 安装依赖
+        run: npm ci
+
+      - name: 类型与内容校验（astro check）
+        run: npx astro check
+
+      - name: 试构建（纯静态，验证整站能构建出来）
+        run: npm run build
+        env:
+          BASE_PATH: "/"
