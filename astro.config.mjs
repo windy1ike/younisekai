@@ -79,6 +79,20 @@ const BASE_PATH = process.env.BASE_PATH || "/younisekai/";
  */
 const ADMIN_ROUTE = process.env.ADMIN_ROUTE || "/studio";
 
+/**
+ * 后台界面用哪个 CMS。
+ *
+ * 两个都读同一份 .decap.yml，OAuth 也走同一套 /oauth 路由，切换只改这一行：
+ *   - Sveltia CMS（默认）：界面更现代紧凑、加载快、保存时对未识别字段更宽容
+ *     https://unpkg.com/@sveltia/cms/dist/sveltia-cms.js
+ *   - Decap CMS（官方原版）：
+ *     https://unpkg.com/decap-cms@^3.9.0/dist/decap-cms.js
+ *
+ * 也可以用部署平台的环境变量 PUBLIC_DECAP_CMS_SRC_URL 覆盖（不必改代码）。
+ */
+const CMS_SRC_URL =
+    process.env.PUBLIC_DECAP_CMS_SRC_URL || "https://unpkg.com/@sveltia/cms/dist/sveltia-cms.js";
+
 // Ref: https://astro.build/config
 export default defineConfig({
     site: process.env.SITE_URL || siteConfig.siteURL,
@@ -87,8 +101,9 @@ export default defineConfig({
     adapter: adapter,
     integrations: [
         decapCmsOauth({
-            configPath: "./.decap.yml", // Decap CMS 配置文件位置
+            configPath: "./.decap.yml", // CMS 配置文件位置
             decapCMSVersion: "3.9.0",
+            decapCMSSrcUrl: CMS_SRC_URL, // 后台界面：Sveltia（默认）或 Decap
             enable: enableCmsOauth, // 设为 true 时需要 .env 里的 OAuth 凭据
             adminRoute: ADMIN_ROUTE, // 后台地址：<站点>/studio/
             oauthLoginRoute: "/oauth", // OAuth 入口，需与 .decap.yml 的 auth_endpoint 一致

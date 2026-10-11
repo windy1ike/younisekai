@@ -259,7 +259,28 @@ npx decap-server        # 另开一个终端
 npm run dev             # 然后访问 http://localhost:4321/studio/
 ```
 
-`.decap.yml` 里的 `local_backend: true` 让后台直接读写本地文件，适合本地编辑。
+> 本地写稿依赖 Decap 的 local_backend，Sveltia 对此支持有限；本地写稿时可以把
+> `PUBLIC_DECAP_CMS_SRC_URL` 设成 Decap 的地址（见 `.env.example`）。
+
+### 用哪个编辑器
+
+后台界面默认用 **Sveltia CMS**（Decap 的现代替代品：界面更紧凑、加载更快、保存时对未识别的
+frontmatter 字段更宽容），配置在 `astro.config.mjs` 的 `CMS_SRC_URL`：
+
+```js
+// Sveltia（默认）
+"https://unpkg.com/@sveltia/cms/dist/sveltia-cms.js"
+// Decap CMS（官方原版）
+"https://unpkg.com/decap-cms@^3.9.0/dist/decap-cms.js"
+```
+
+两者读同一份 `.decap.yml`、走同一套 `/oauth` 登录，改这一行（或设环境变量
+`PUBLIC_DECAP_CMS_SRC_URL`）就能切换。
+
+**关于"保存后字段被抹掉"**：这类 Git CMS 保存时会按 `.decap.yml` 的字段清单重写整个
+frontmatter —— 不在清单里的字段会被丢掉。所以本项目的做法是：界面上只显示常用的 11 个字段，
+其余（语言、作者、许可证、更新日期、加密密码等）用 `widget: hidden` 保留在配置里，
+既能原样保存回文件，又不会在表单里打扰你。想手动改这些值就直接编辑文件。
 
 ### 线上登录（GitHub OAuth）
 
