@@ -14,25 +14,7 @@ import {
 export { SUPPORTED_LANGUAGES, type SupportedLanguage, LANGUAGE_CONFIG, LANGUAGE_REGION_MAP, langToLocaleMap };
 
 
-// 语言存储键
-const LANG_STORAGE_KEY = "selected-language";
-
-// 存储语言设置
-export function setStoredLanguage(lang: string): void {
-    if (typeof localStorage !== "undefined") {
-        localStorage.setItem(LANG_STORAGE_KEY, lang);
-    }
-}
-
-// 获取存储的语言设置
-export function getStoredLanguage(): string | null {
-    if (typeof localStorage !== "undefined") {
-        return localStorage.getItem(LANG_STORAGE_KEY);
-    }
-    return null;
-}
-
-// 获取默认语言配置
+// 获取默认语言配置（站点配置里的 lang，浏览器端优先读 config-carrier 注入的值）
 export function getDefaultLanguage(): string {
     const fallback = siteConfig.lang;
     if (typeof document !== "undefined") {
