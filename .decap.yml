@@ -156,48 +156,21 @@ collections:
                     - { name: "blockContextMenu", label: "禁止右键菜单", widget: "boolean", default: false, required: false }
                     - { name: "blockDevTools", label: "禁止开发者工具快捷键", widget: "boolean", default: false, required: false }
 
-            # ==================== 高级（平时不用管）====================
-            - # 自定义路径
-                {
-                    name: "routeName",
-                    label: "高级：自定义路径",
-                    widget: "string",
-                    required: false,
-                    hint: "留空则使用文件名作为文章 URL 片段",
-                }
-            - # 侧栏目录名称
-                {
-                    name: "directoryTitle",
-                    label: "高级：侧栏目录名称",
-                    widget: "string",
-                    required: false,
-                    hint: "左侧目录树中显示的名称，留空则使用标题",
-                }
-            - # 语言
-                {
-                    name: "lang",
-                    label: "高级：语言",
-                    widget: "string",
-                    required: false,
-                    hint: "留空表示使用站点默认语言",
-                }
-            - # 作者
-                { name: "author", label: "高级：作者", widget: "string", required: false }
-            - # 来源链接
-                { name: "sourceLink", label: "高级：来源链接", widget: "string", required: false }
-            - # 许可证名称
-                { name: "licenseName", label: "高级：许可证名称", widget: "string", required: false }
-            - # 许可证链接
-                { name: "licenseUrl", label: "高级：许可证链接", widget: "string", required: false }
-            - # 页面加密（密码不在后台上填，改文件时手写 password 字段）
-                {
-                    name: "encrypted",
-                    label: "高级：启用页面加密",
-                    widget: "boolean",
-                    default: false,
-                    required: false,
-                    hint: "在编辑器里给该文件手写一行 password: 你的密码 才生效（后台不提供密码输入框）",
-                }
+            # ==================== 隐藏字段：不在表单里显示，但必须保留 ====================
+            # 为什么要留：Decap 保存时会按「字段列表」重写整个 frontmatter，
+            # 没列在这里的字段会被丢掉。用 widget: hidden 既不在界面上打扰你，
+            # 又能把文件里原有的值（比如示例文章里的 lang、author、许可证）原样保留。
+            # 想手动改这些值时，直接在编辑器里改文件即可。
+            - { name: "routeName", label: "自定义路径", widget: "hidden", required: false }
+            - { name: "directoryTitle", label: "侧栏目录名称", widget: "hidden", required: false }
+            - { name: "lang", label: "语言", widget: "hidden", required: false }
+            - { name: "author", label: "作者", widget: "hidden", required: false }
+            - { name: "sourceLink", label: "来源链接", widget: "hidden", required: false }
+            - { name: "licenseName", label: "许可证名称", widget: "hidden", required: false }
+            - { name: "licenseUrl", label: "许可证链接", widget: "hidden", required: false }
+            - { name: "updated", label: "更新日期", widget: "hidden", required: false }
+            - { name: "encrypted", label: "启用页面加密", widget: "hidden", required: false }
+            - { name: "password", label: "访问密码", widget: "hidden", required: false }
 
     - # 关于页面（单文件）
         name: "page_about"
