@@ -1,0 +1,139 @@
+---
+/**
+ * 阅读进度条
+ *
+ * 固定在视口最下方的一条细线，随文章阅读进度从左向右填充。
+ * 只放在文章页模板里，所以其它页面不会出现。
+ *
+ * 进度按「文章容器」计算（默认 #post-container）：容器进入视口时从 0% 开始，
+ * 读到容器底部时到 100%；找不到容器就退化成整页滚动进度。
+ *
+ * 想让它出现在所有页面，把 <ReadingProgress /> 从 posts/[...slug].astro
+ * 挪到 layouts/grid.astro 里即可（脚本会自己找文章容器，找不到就按整页算）。
+ */
+---
+
+<div
+    class="reading-progress"
+    id="reading-progress"
+    data-article="#post-container"
+    role="progressbar"
+    aria-label="阅读进度"
+    aria-hidden="true"
+>
+    <div class="reading-progress__bar"></div>
+</div>
+
+<style>
+    .reading-progress {
+        position: fixed;
+        left: 0;
+        right: 0;
+        bottom: 0;
+        height: 3px;
+        /* 轨道：主色的淡色底，暗色/亮色主题都跟随 --hue 走 */
+        background: color-mix(in oklch, var(--primary) 16%, transparent);
+        /* 低于右下角的浮动按钮（目录按钮 90、返回顶部 100），高于正文 */
+        z-index: 60;
+        pointer-events: none;
+        opacity: 0;
+        transition: opacity var(--transition-duration-medium, 300ms) ease;
+    }
+
+    .reading-progress.is-visible {
+        opacity: 1;
+    }
+
+    .reading-progress__bar {
+        height: 100%;
+        width: 0;
+        background: var(--primary);
+        box-shadow: 0 0 8px color-mix(in oklch, var(--primary) 55%, transparent);
+        transition: width 90ms linear;
+        will-change: width;
+    }
+
+    @media (prefers-reduced-motion: reduce) {
+        .reading-progress,
+        .reading-progress__bar {
+            transition: none;
+        }
+    }
+</style>
+
+<script>
+    let detach: (() => void) | null = null;
+
+    function setupReadingProgress() {
+        // 切页时先把上一次的监听摘掉，避免叠加
+        if (detach) {
+            detach();
+            detach = null;
+        }
+
+        const el = document.querySelector<HTMLElement>(".reading-progress");
+        const bar = el?.querySelector<HTMLElement>(".reading-progress__bar");
+        if (!el || !bar) return;
+
+        const article = document.querySelector<HTMLElement>(el.dataset.article || "#post-container");
+
+        const update = () => {
+            const scrollTop = window.scrollY || document.documentElement.scrollTop || 0;
+            const viewport = window.innerHeight || document.documentElement.clientHeight;
+            const doc = document.documentElement;
+
+            // 文章容器在文档中的起点与可滚动高度；没有容器就用整页
+            const start = article ? scrollTop + article.getBoundingClientRect().top : 0;
+            const height = article
+                ? article.offsetHeight
+                : doc.scrollHeight;
+            const total = height - viewport;
+
+            let progress: number;
+            if (total <= 8) {
+                // 文章短于一屏：视作已读完
+                progress = 1;
+            } else {
+                progress = (scrollTop - start) / total;
+            }
+            progress = Math.min(1, Math.max(0, progress));
+
+            bar.style.width = `${(progress * 100).toFixed(2)}%`;
+
+            // 顶部（还没开始滚动）时隐藏，避免刚进页面就出现一条满格线
+            const scrolledEnough = scrollTop > 32;
+            const notFinishedAtTop = !(progress >= 1 && scrollTop <= 32);
+            el.classList.toggle("is-visible", scrolledEnough && notFinishedAtTop);
+        };
+
+        const onScroll = () => window.requestAnimationFrame(update);
+        const onResize = () => window.requestAnimationFrame(update);
+
+        window.addEventListener("scroll", onScroll, { passive: true });
+        window.addEventListener("resize", onResize);
+        update();
+
+        detach = () => {
+            window.removeEventListener("scroll", onScroll);
+            window.removeEventListener("resize", onResize);
+        };
+    }
+
+    document.addEventListener("DOMContentLoaded", setupReadingProgress);
+    window.addEventListener("load", setupReadingProgress);
+
+    // Swup 无刷新切页后，进度条这个 DOM 会跟着内容一起被换掉，需要重新绑定。
+    // page:view 在内容替换并渲染完成之后触发，所以这时候查 DOM 拿到的才是新节点。
+    let swupBound = false;
+    const bindSwup = () => {
+        if (swupBound || !(window as any).swup?.hooks) return;
+        (window as any).swup.hooks.on("page:view", () => {
+            // 等一次绘制，顺便让 base 里的「滚回顶部」先执行
+            window.requestAnimationFrame(setupReadingProgress);
+            setTimeout(setupReadingProgress, 320);
+        });
+        swupBound = true;
+    };
+    if ((window as any).swup?.hooks) bindSwup();
+    else document.addEventListener("swup:enable", bindSwup);
+</script>
