@@ -1,0 +1,103 @@
+---
+import { getCollection, render } from 'astro:content';
+import BaseLayout from '../../layouts/BaseLayout.astro';
+import TableOfContents from '../../components/TableOfContents.astro';
+import { TEXT } from '../../consts';
+import { formatDate, neighbors, postUrl, sortByDate, tagUrl, toISODate, visiblePosts } from '../../utils/post';
+
+export async function getStaticPaths() {
+  const posts = visiblePosts(await getCollection('posts'));
+  return posts.map((post) => ({
+    params: { id: post.id },
+    props: { post },
+  }));
+}
+
+const { post } = Astro.props;
+const { Content, headings } = await render(post);
+const { title, description, pubDate, updatedDate, tags, draft } = post.data;
+
+const posts = sortByDate(visiblePosts(await getCollection('posts')));
+const { newer, older } = neighbors(posts, post);
+const updated = updatedDate && updatedDate.getTime() !== pubDate.getTime() ? updatedDate : undefined;
+---
+
+<BaseLayout title={title} description={description} noindex={draft}>
+  <div class="progress-bar" aria-hidden="true"></div>
+
+  <div class="container container--wide post-layout">
+    <article class="post-article">
+      <header class="post-header">
+        <h1>{title}</h1>
+        {description && <p class="post-header__desc">{description}</p>}
+        <div class="post-meta">
+          <time datetime={toISODate(pubDate)}>{formatDate(pubDate)}</time>
+          {updated && <span class="post-meta__sep">·</span>}
+          {updated && <span>{TEXT.updatedAt(formatDate(updated))}</span>}
+          {draft && <span class="draft-badge">{TEXT.draftBadge}</span>}
+        </div>
+        {
+          tags.length > 0 && (
+            <ul class="tag-list" style="margin-top:0.85rem">
+              {tags.map((tag) => (
+                <li>
+                  <a class="tag" href={tagUrl(tag)}>
+                    {tag}
+                  </a>
+                </li>
+              ))}
+            </ul>
+          )
+        }
+      </header>
+
+      {/* .prose 只包住正文：否则正文的 ul/li/a 样式会作用到标题区的标签行上 */}
+      <div class="prose">
+        <Content />
+      </div>
+
+      {
+        (newer || older) && (
+          <nav class="post-nav" aria-label={TEXT.postNavLabel}>
+            <div class="post-nav__item">
+              {older && (
+                <>
+                  <span class="post-nav__label">{TEXT.postPrev}</span>
+                  <a class="post-nav__title" href={postUrl(older)}>{older.data.title}</a>
+                </>
+              )}
+            </div>
+            <div class="post-nav__item post-nav__item--next">
+              {newer && (
+                <>
+                  <span class="post-nav__label">{TEXT.postNext}</span>
+                  <a class="post-nav__title" href={postUrl(newer)}>{newer.data.title}</a>
+                </>
+              )}
+            </div>
+          </nav>
+        )
+      }
+    </article>
+
+    <aside class="post-aside">
+      <TableOfContents headings={headings} />
+    </aside>
+  </div>
+</BaseLayout>
+
+<script>
+  // 顶部阅读进度条
+  const bar = document.querySelector('.progress-bar') as HTMLElement | null;
+  if (bar) {
+    const update = () => {
+      const doc = document.documentElement;
+      const max = doc.scrollHeight - doc.clientHeight;
+      const ratio = max > 0 ? Math.min(1, doc.scrollTop / max) : 0;
+      bar.style.transform = `scaleX(${ratio})`;
+    };
+    update();
+    window.addEventListener('scroll', update, { passive: true });
+    window.addEventListener('resize', update);
+  }
+</script>

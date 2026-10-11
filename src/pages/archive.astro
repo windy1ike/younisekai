@@ -1,0 +1,56 @@
+---
+import { getCollection } from 'astro:content';
+import BaseLayout from '../layouts/BaseLayout.astro';
+import { TEXT } from '../consts';
+import type { Post } from '../utils/post';
+import { formatShortDate, postUrl, sortByDate, tagCounts, toISODate, visiblePosts } from '../utils/post';
+
+const posts = sortByDate(visiblePosts(await getCollection('posts')));
+
+// 按年份分组（列表已按时间倒序，Map 会保持年份从新到旧）
+const groups = new Map<string, Post[]>();
+for (const post of posts) {
+  const year = String(post.data.pubDate.getUTCFullYear());
+  const list = groups.get(year);
+  if (list) {
+    list.push(post);
+  } else {
+    groups.set(year, [post]);
+  }
+}
+
+const tags = tagCounts(posts);
+---
+
+<BaseLayout title={TEXT.archiveTitle} description={TEXT.archiveMeta}>
+  <div class="container section">
+    <h1 class="page-title">{TEXT.archiveTitle}</h1>
+    <p class="page-desc">{TEXT.archiveCount(posts.length, tags.length)}</p>
+
+    {
+      posts.length === 0 ? (
+        <p class="empty">{TEXT.archiveEmpty}</p>
+      ) : (
+        [...groups].map(([year, list]) => (
+          <section>
+            <h2 class="year-heading">
+              {TEXT.archiveYear(year)}{' '}
+              <span style="color:var(--text-muted);font-size:0.9rem;font-weight:400">
+                {TEXT.archiveYearCount(list.length)}
+              </span>
+            </h2>
+            <ul class="archive-list">
+              {list.map((post) => (
+                <li>
+                  <time datetime={toISODate(post.data.pubDate)}>{formatShortDate(post.data.pubDate)}</time>
+                  <a href={postUrl(post)}>{post.data.title}</a>
+                  {post.data.draft && <span class="draft-badge">{TEXT.draftBadge}</span>}
+                </li>
+              ))}
+            </ul>
+          </section>
+        ))
+      )
+    }
+  </div>
+</BaseLayout>

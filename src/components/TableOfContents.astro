@@ -1,0 +1,27 @@
+---
+import type { MarkdownHeading } from 'astro';
+import { TEXT } from '../consts';
+
+interface Props {
+  headings: MarkdownHeading[];
+}
+
+const { headings } = Astro.props;
+// 只显示 h2 / h3，h1 是文章标题本身
+const items = headings.filter((heading) => heading.depth === 2 || heading.depth === 3);
+---
+
+{
+  items.length > 1 && (
+    <nav class="toc" aria-labelledby="toc-title">
+      <p class="toc__title" id="toc-title">{TEXT.tocTitle}</p>
+      <ul>
+        {items.map((heading) => (
+          <li class={`depth-${heading.depth}`}>
+            <a href={`#${heading.slug}`}>{heading.text}</a>
+          </li>
+        ))}
+      </ul>
+    </nav>
+  )
+}

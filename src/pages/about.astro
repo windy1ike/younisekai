@@ -1,0 +1,19 @@
+---
+import { getEntry, render } from 'astro:content';
+import BaseLayout from '../layouts/BaseLayout.astro';
+import { TEXT } from '../consts';
+
+// 内容来自 src/content/pages/about.md，直接改那个文件即可
+const entry = await getEntry('pages', 'about');
+const Content = entry ? (await render(entry)).Content : null;
+const title = entry?.data.title ?? TEXT.aboutFallbackTitle;
+---
+
+<BaseLayout title={title} description={entry?.data.description}>
+  <div class="container section">
+    <h1 class="page-title">{title}</h1>
+    <div class="prose">
+      {Content ? <Content /> : <p>{TEXT.aboutEmpty}</p>}
+    </div>
+  </div>
+</BaseLayout>

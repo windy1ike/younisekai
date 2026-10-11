@@ -1,0 +1,31 @@
+---
+import { getCollection } from 'astro:content';
+import BaseLayout from '../../layouts/BaseLayout.astro';
+import PostCard from '../../components/PostCard.astro';
+import { TEXT } from '../../consts';
+import { sortByDate, visiblePosts } from '../../utils/post';
+
+export async function getStaticPaths() {
+  const posts = visiblePosts(await getCollection('posts'));
+  const tags = [...new Set(posts.flatMap((post) => post.data.tags))].sort((a, b) => a.localeCompare(b, 'zh-CN'));
+  return tags.map((tag) => ({ params: { tag }, props: { tag } }));
+}
+
+const { tag } = Astro.props;
+const posts = sortByDate(visiblePosts(await getCollection('posts'))).filter((post) =>
+  post.data.tags.includes(tag),
+);
+---
+
+<BaseLayout title={TEXT.tagTitle(tag)} description={TEXT.tagMeta(tag)}>
+  <div class="container section">
+    <h1 class="page-title">{TEXT.tagTitle(tag)}</h1>
+    <p class="page-desc">
+      {TEXT.tagCount(posts.length)} · <a href={import.meta.env.BASE_URL + 'tags/'}>{TEXT.tagsAll}</a>
+    </p>
+
+    <ul class="post-list">
+      {posts.map((post) => <PostCard post={post} showTags={false} />)}
+    </ul>
+  </div>
+</BaseLayout>

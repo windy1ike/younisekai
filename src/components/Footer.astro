@@ -1,0 +1,19 @@
+---
+import { SITE, TEXT } from '../consts';
+import { withBase } from '../utils/url';
+
+const year = new Date().getFullYear();
+---
+
+<footer class="site-footer">
+  <div class="container container--wide site-footer__inner">
+    <span>© {year} {SITE.author}</span>
+    <span class="site-footer__links">
+      {
+        TEXT.footerLinks.map((link) => (
+          <a href={withBase(link.href)}>{link.label}</a>
+        ))
+      }
+    </span>
+  </div>
+</footer>

@@ -1,0 +1,8 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64">
+  <!-- KazeYouni's Wonderland 的 K -->
+  <rect width="64" height="64" rx="14" fill="#3660d6" />
+  <g fill="none" stroke="#ffffff" stroke-width="7" stroke-linecap="round" stroke-linejoin="round">
+    <path d="M23 16V48" />
+    <path d="M45 16 25 33l20 15" />
+  </g>
+</svg>
