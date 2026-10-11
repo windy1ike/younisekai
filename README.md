@@ -113,13 +113,45 @@ younisekai/
 | `footer` | 页脚自定义 HTML 注入（备案号之类） |
 | `particle` | 粒子特效的数量、尺寸、透明度、速度 |
 
+### 什么能在后台改，什么要改代码
+
+站点设置由**两个文件**共同决定：
+
+- `younisekai.config.yaml` —— 主配置，带详细中文注释，**直接用编辑器改**
+- `younisekai.override.yaml` —— 覆盖层，**后台的「站点设置」写的就是这个文件**
+
+后台保存会重写整个文件（注释会被清掉），所以把"想让后台管的部分"单独放到覆盖层里，
+主配置的注释与结构就不会被动。合并规则：覆盖层里出现的键覆盖主配置，留空则用主配置；
+空数组会被忽略（所以后台不填菜单不会把主配置的菜单清空，想清空请改主配置）。
+
+| 想改什么 | 在哪改 |
+| --- | --- |
+| 文章（标题、正文、分类、标签、封面、置顶、草稿、复制保护） | **后台** → 文章 |
+| 站点标题 / 副标题 / 关键词 / 主题色相 / 默认深浅色 | **后台** → 站点设置 → 站点信息 |
+| 导航菜单（含多级子菜单、图标、悬停说明） | **后台** → 站点设置 → 导航菜单 |
+| 侧栏挂件（增删、顺序、固定/粘性、目录深度） | **后台** → 站点设置 → 侧栏挂件 |
+| 资料卡（头像、昵称、简介、社交链接） | **后台** → 站点设置 → 资料卡 |
+| 公告（标题、内容、可关闭、附带链接） | **后台** → 站点设置 → 公告 |
+| 关于页 / 友链说明页 / 友链条目 | **后台** → 关于页面 / 友链说明页 / 友链 |
+| 项目 / 技能 / 时间线 / 日记 / 相册 | **后台** → 对应集合 |
+| 图片素材 | **后台** 上传（落到 `public/assets/images/`），或放进内容目录用相对路径 `./x.svg` |
+| 壁纸（图片、模式、轮播、Ken Burns、横幅打字机标语） | 代码：`site.wallpaper` |
+| 字体、加载页、favicon | 代码：`site.font` / `site.loadingOverlay` / `site.favicon` |
+| 文章卡片样式、标题字号、许可证、评论服务 | 代码：`post` 段 |
+| 页脚自定义 HTML（备案号等） | 代码：`footer` 段 + `public/FooterConfig.html` |
+| 粒子特效 | 代码：`particle` 段 |
+| 首页每页文章数 | 代码：`src/constants/pagination.ts` |
+| 站点地址 / 后台域名 | 代码：`younisekai.config.yaml` 的 `siteURL` + `.decap.yml` 的域名（可用 `npm run set-domain -- <网址>` 一次改好） |
+| 配色公式、排版样式、动效 | 代码：`src/styles/**`（`variables.styl` 里是那套由 `--hue` 派生的颜色变量） |
+| 侧栏目录树里文件夹节点的显示名 | 代码：`post.directoryTitles`（例如 `guide: "入门指南"`） |
+
 几个常用项：
 
 ```yaml
 site:
-    siteURL: "https://younisekai.example.com/"   # 部署前务必改成自己的域名
-    title: "younisekai"
-    subtitle: "异世界手记"
+    siteURL: "https://kazeyouni.pages.dev/"   # 必须与真实部署地址一致
+    title: "YouniSekai"
+    subtitle: "存于风中"
     lang: "zh_CN"          # 界面语言
     defaultTheme: "dark"   # system | light | dark
     themeColor:

@@ -17,7 +17,7 @@ site:
     # 站点标题
     title: "YouniSekai"
     # 站点副标题
-    subtitle: "异世界手记"
+    subtitle: "存于风中"
     # 语言配置
     # 可选值为 src/i18n/language.ts 中已内置翻译的语言：en / ja / zh_hans / zh_hant
     # 地区写法 (如 zh_CN / zh_TW) 会自动归一化到对应语言
@@ -26,7 +26,7 @@ site:
     keywords:
         - "YouniSekai"
         - "KazeYouni"
-        - "异世界手记"
+        - "存于风中"
         - "博客"
         - "Astro"
     # 时区配置 (UTC 偏移小时数，范围 -12 ~ 12)

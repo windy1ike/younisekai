@@ -54,7 +54,7 @@ draft: false
 | --- | --- | --- |
 | `site.siteURL` | 形如 `https://你的域名/` | 站点根地址，**必须以斜杠结尾**；RSS、Atom、站点地图与分享卡片都依赖它 |
 | `site.title` | `YouniSekai` | 站点标题，显示在导航栏左上角与浏览器标签页 |
-| `site.subtitle` | `异世界手记` | 站点副标题，用于默认描述与页脚 |
+| `site.subtitle` | `存于风中` | 站点副标题，用于默认描述与页脚 |
 | `site.lang` | `zh_CN` | 站点语言，可选 `en` / `ja` / `zh_hans` / `zh_hant`；`zh_CN`、`zh_TW` 这类地区写法会自动归一化 |
 | `site.keywords` | 字符串数组 | 站点关键词，用于生成 `<meta name="keywords">` |
 | `site.timeZone` | `8` | UTC 偏移小时数（-12 ~ 12），用于「几小时前」这类相对时间 |

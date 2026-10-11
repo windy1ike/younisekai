@@ -12,12 +12,12 @@
     "links": [
         {
             "name": "在线预览",
-            "url": "https://example.com",
+            "url": "",
             "type": "project"
         },
         {
             "name": "代码仓库",
-            "url": "https://example.com/younisekai/template",
+            "url": "",
             "type": "project"
         }
     ],

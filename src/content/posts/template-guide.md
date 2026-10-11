@@ -221,11 +221,11 @@ tags: Markdown, 排版
 ```yaml
 ---
 title: 模板使用指南
-routeName: "start"
+routeName: "guide"
 ---
 ```
 
-上面这段配置会让这篇同时可以通过 `/posts/start/` 访问（默认的 `/posts/template-guide/` 依然有效）。适合把常被引用的文章挂一个短地址。
+上面这段配置会让这篇同时可以通过 `/posts/guide/` 访问（默认的 `/posts/template-guide/` 依然有效）。适合把常被引用的文章挂一个短地址。
 
 ## 封面与图片
 
