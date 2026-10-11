@@ -26,6 +26,10 @@ const updated = updatedDate && updatedDate.getTime() !== pubDate.getTime() ? upd
   <div class="progress-bar" aria-hidden="true"></div>
 
   <div class="container container--wide post-layout">
+    <aside class="post-aside">
+      <TableOfContents headings={headings} />
+    </aside>
+
     <article class="post-article">
       <header class="post-header">
         <h1>{title}</h1>
@@ -79,10 +83,6 @@ const updated = updatedDate && updatedDate.getTime() !== pubDate.getTime() ? upd
         )
       }
     </article>
-
-    <aside class="post-aside">
-      <TableOfContents headings={headings} />
-    </aside>
   </div>
 </BaseLayout>
 
@@ -99,5 +99,34 @@ const updated = updatedDate && updatedDate.getTime() !== pubDate.getTime() ? upd
     update();
     window.addEventListener('scroll', update, { passive: true });
     window.addEventListener('resize', update);
+  }
+
+  // 目录高亮：滚动时标出当前所在的小节
+  const tocLinks = Array.from(document.querySelectorAll<HTMLAnchorElement>('.toc a'));
+  const sections = tocLinks
+    .map((link) => document.getElementById(decodeURIComponent(link.hash.slice(1))))
+    .filter((el): el is HTMLElement => el !== null);
+
+  if (sections.length > 0) {
+    const highlight = () => {
+      const from = window.scrollY + 100; // 吸顶页头下方
+      let active = sections[0];
+      for (const section of sections) {
+        if (section.offsetTop <= from) active = section;
+      }
+      // 滚到底部时，最后一节没被读过也应当高亮
+      const atBottom = window.innerHeight + window.scrollY >= document.documentElement.scrollHeight - 2;
+      if (atBottom) active = sections[sections.length - 1];
+
+      for (const link of tocLinks) {
+        const isActive = decodeURIComponent(link.hash.slice(1)) === active.id;
+        if (isActive) link.setAttribute('aria-current', 'location');
+        else link.removeAttribute('aria-current');
+      }
+    };
+
+    highlight();
+    window.addEventListener('scroll', highlight, { passive: true });
+    window.addEventListener('resize', highlight);
   }
 </script>

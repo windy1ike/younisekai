@@ -456,13 +456,18 @@ a.tag:hover {
 }
 
 .prose h3 {
-  font-size: 1.2rem;
-  margin-top: 1.9em;
+  font-size: 1.15rem;
+  margin-top: 2em;
 }
 
 .prose h4 {
-  font-size: 1.05rem;
+  font-size: 1rem;
   margin-top: 1.6em;
+}
+
+/* 点目录跳转时，标题不要躲到吸顶页头下面 */
+.prose :is(h2, h3, h4) {
+  scroll-margin-top: 5.5rem;
 }
 
 .prose h2 + *,
@@ -679,10 +684,7 @@ a.tag:hover {
   font-size: 0.98rem;
 }
 
-.post-aside {
-  order: -1;
-}
-
+/* 窄屏：目录是正文上方的独立卡片，靠 DOM 顺序自然排在最前 */
 .toc {
   padding: 1rem 1.1rem;
   background: var(--bg-elev);
@@ -720,6 +722,11 @@ a.tag:hover {
 .toc a:hover {
   color: var(--accent);
   text-decoration: none;
+}
+/* 滚动时当前所在的小节（由文章页脚本标记） */
+.toc a[aria-current='location'] {
+  color: var(--accent);
+  font-weight: 600;
 }
 
 /* 阅读进度条 */
@@ -891,22 +898,27 @@ mark {
 
 @media (min-width: 1100px) {
   .post-layout {
-    grid-template-columns: minmax(0, var(--w-prose)) 15rem;
+    /* 目录在左、正文在右。
+       minmax(0, --w-prose) 里的 0 让正文栏可以收缩，
+       所以两栏加起来正好等于容器宽度，不会溢出。 */
+    grid-template-columns: 15rem minmax(0, var(--w-prose));
     justify-content: center;
     align-items: start;
     gap: 3rem;
   }
   .post-aside {
-    order: 0;
     position: sticky;
     top: 5rem;
     max-height: calc(100vh - 7rem);
     overflow-y: auto;
   }
+  /* 文档风侧边栏：一条竖线导引，比卡片更安静 */
   .toc {
     background: transparent;
     border: 0;
-    padding: 0;
+    border-left: 1px solid var(--border);
+    border-radius: 0;
+    padding: 0 0 0 1.1rem;
   }
 }
 
