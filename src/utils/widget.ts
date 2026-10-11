@@ -65,6 +65,19 @@ export class WidgetManager {
         const { mode, paths } = component.visibility;
         // 确保路径以 / 开头，以便于匹配
         let normalizedPath = currentPath.startsWith('/') ? currentPath : '/' + currentPath;
+
+        // 子路径部署（base 不为 /）时先剥掉 base 前缀，
+        // 这样配置里写的 ^/$、^/archive$ 这类「站点根路径」正则依然成立
+        const base = import.meta.env.BASE_URL || "/";
+        if (base !== "/") {
+            const basePrefix = base.replace(/\/+$/, "");
+            if (basePrefix && normalizedPath === basePrefix) {
+                normalizedPath = "/";
+            } else if (basePrefix && normalizedPath.startsWith(`${basePrefix}/`)) {
+                normalizedPath = normalizedPath.slice(basePrefix.length);
+            }
+        }
+
         // 移除末尾的斜杠（如果是根路径 / 则保留）
         if (normalizedPath.length > 1 && normalizedPath.endsWith('/')) {
             normalizedPath = normalizedPath.slice(0, -1);
