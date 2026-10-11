@@ -24,15 +24,15 @@ backend:
     repo: windy1ike/younisekai # GitHub 仓库（格式：用户名/仓库名）
     branch: main # 分支名称
     # ⚠️ 下面三处请替换成你部署后的真实域名（不带协议 / 带协议各一处），改完重新构建即可生效
-    site_domain: your-pages-domain.pages.dev
-    base_url: https://your-pages-domain.pages.dev
+    site_domain: kazeyouni.pages.dev
+    base_url: https://kazeyouni.pages.dev
     auth_endpoint: oauth # OAuth 入口，由 decap-cms-oauth-astro 集成提供（astro.config.mjs 的 oauthLoginRoute）
 
 # 后台访问地址，Decap CMS 用它拼接后台与站点之间的链接
-site_url: https://your-pages-domain.pages.dev
+site_url: https://kazeyouni.pages.dev
 
 # 后台左上角 LOGO，可换成自己的图片地址（默认为站点 favicon）
-logo_url: https://your-pages-domain.pages.dev/favicon/icon-light.svg
+logo_url: https://kazeyouni.pages.dev/favicon/icon-light.svg
 
 # 设置后台系统语言 (zh_Hans 简体中文 | en 英文 | ...)
 locale: zh_Hans
