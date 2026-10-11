@@ -20,7 +20,6 @@ import PasswordProtection from "@components/common/passwordProtection.astro";
 import PostMetadata from "@components/post/postMeta.astro";
 import Comment from "@components/comment.astro";
 import CopyProtection from "@components/copyProtection.astro";
-import ReadingProgress from "@components/readingProgress.astro";
 import GridLayout from "@layouts/grid.astro";
 
 
@@ -398,5 +397,4 @@ const jsonLd = {
         }
     </div>
     <CopyProtection copyProtection={entry.data.copyProtection} />
-    <ReadingProgress />
 </GridLayout>

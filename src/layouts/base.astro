@@ -40,6 +40,7 @@ import { pathsEqual, url } from "@utils/url";
 import FontLoader from "@components/fontLoader.astro";
 import LoadingOverlay from "@components/loadingOverlay.astro";
 import ConfigCarrier from "@components/configCarrier.astro";
+import ReadingProgress from "@components/readingProgress.astro";
 import "@styles/navbar.css";
 import "@styles/banner.css";
 import "@styles/fancybox.css";
@@ -253,6 +254,8 @@ const ogImageURL = (() => {
 
     <body class=" min-h-screen " class:list={[{"is-home": isHomePage, "enable-banner": enableBanner}]}
     >
+        <!-- 阅读进度条：必须放在 body 直接子级，别挪进 grid.astro 里带 transform 的容器 -->
+        <ReadingProgress />
         <!-- 页面加载动画 -->
         <LoadingOverlay />
         <!-- 全局配置载体 -->
