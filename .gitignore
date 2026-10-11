@@ -1,21 +1,23 @@
-# editor config
+# 编辑器配置
 **/.vscode/
+.idea/
+*.swp
+*.swo
 
-# dependencies
+# 依赖
 node_modules/
 
-# generated types
+# 构建与生成物
+dist/
 .astro/
 .vercel/
+.netlify/
 
-# build output
-dist/
-
-# logs
+# 日志
 npm-debug.log*
 yarn-debug.log*
 yarn-error.log*
-pnpm-debug.log*
 
-# private config
+# 本地私有配置（OAuth 凭据等，见 .env.example）
 .env
+.env.local
