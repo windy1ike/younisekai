@@ -4,7 +4,7 @@
  * 全站配色由单个 --hue 变量派生：variables.styl 里的颜色变量（--primary、--page-bg、
  * --card-bg、--btn-regular-bg、--codeblock-bg 等）全部写成 oklch(... var(--hue))，
  * 所以只改色相就能整体换主题。--hue 不在样式里写死，而是由 layout 从站点配置注入
- * （site.themeColor.hue，默认 265 = 紫罗兰「异世界黄昏」基调），运行时再由主题色
+ * （site.themeColor.hue，默认 265 = 紫罗兰「紫罗兰暮色」基调），运行时再由主题色
  * 按钮经 setHue() 写到 <html> 上；想换主题色请改配置或用导航栏的主题色开关。
  *
  * 本文件负责 Tailwind v4 入口、@theme/@utility 定义以及全局零散样式；

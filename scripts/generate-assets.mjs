@@ -42,7 +42,7 @@ function makeRandom(seed) {
 const round = (n) => Math.round(n * 100) / 100;
 
 /**
- * 生成一张「异世界黄昏」风格插画
+ * 生成一张「紫罗兰暮色」风格插画
  *
  * @param {object} options
  * @param {number} options.width  画布宽

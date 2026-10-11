@@ -117,6 +117,11 @@ export type SiteConfig = {
                 typewriter?: {
                     // 启用副标题打字机效果
                     enable: boolean;
+                    /**
+                     * 每次打开页面随机取一条副标题，打完就固定显示（不再轮换）。
+                     * 设为 false 时按数组顺序逐条打字并循环。
+                     */
+                    random?: boolean;
                     // 打字速度 (ms)
                     speed: number;
                     // 删除速度 (ms)

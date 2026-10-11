@@ -5,6 +5,12 @@ export interface Props {
     deleteSpeed?: number;
     pauseTime?: number;
     class?: string;
+    /**
+     * 是否"随机取一条并固定显示"：
+     * true  → 每次打开页面随机选一条，打字完成后保持不动（不删除、不轮换）
+     * false → 按数组顺序逐条打字、删除、循环（默认）
+     */
+    random?: boolean;
 }
 
 const {
@@ -13,11 +19,12 @@ const {
     deleteSpeed = 50,
     pauseTime = 2000,
     class: className = "",
+    random = false,
 } = Astro.props;
 const textData = Array.isArray(text) ? JSON.stringify(text) : text;
 ---
 
-<span class={`typewriter ${className}`} data-text={textData} data-speed={speed} data-delete-speed={deleteSpeed} data-pause-time={pauseTime}></span>
+<span class={`typewriter ${className}`} data-text={textData} data-speed={speed} data-delete-speed={deleteSpeed} data-pause-time={pauseTime} data-random={String(random)}></span>
 
 <script>
 class TypewriterEffect {
@@ -46,6 +53,11 @@ class TypewriterEffect {
         this.speed = parseInt(element.dataset.speed || '100');
         this.deleteSpeed = parseInt(element.dataset.deleteSpeed || '50');
         this.pauseTime = parseInt(element.dataset.pauseTime || '2000');
+
+        // 随机单条模式：先把候选收窄成一条，后续打字完成就会固定住（length === 1 时不删除）
+        if (element.dataset.random === 'true' && this.texts.length > 1) {
+            this.texts = [this.texts[Math.floor(Math.random() * this.texts.length)]];
+        }
 
         // 如果有多条文本且未启用打字机效果，随机显示一条
         if (this.texts.length > 1 && !this.isTypewriterEnabled()) {
@@ -102,8 +114,10 @@ class TypewriterEffect {
                 if (this.texts.length > 1) {
                     this.isDeleting = true;
                     this.timeoutId = window.setTimeout(() => this.type(), this.pauseTime);
+                } else {
+                    // 只有一条文本（含"随机取一条"模式）：打完就固定，并隐藏闪烁光标
+                    this.element.classList.add('typewriter-done');
                 }
-                // 如果只有一条文本，保持显示不删除
             }
         }
     }
@@ -141,6 +155,12 @@ document.addEventListener('swup:contentReplaced', () => {
     content: '|';
     animation: blink 1s infinite;
     margin-left: 2px;
+}
+
+/* 打完就不再闪烁：随机单条模式下定格显示，不再有光标 */
+.typewriter.typewriter-done::after {
+    content: none;
+    animation: none;
 }
 
 @keyframes blink {

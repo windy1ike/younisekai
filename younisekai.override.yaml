@@ -57,7 +57,7 @@
 # profile:
 #     avatar: "/assets/images/avatar.svg"
 #     name: "KazeYouni"
-#     bio: "在异世界的间隙里，写点代码，也写点故事。"
+#     bio: "写点代码，也写点故事。"
 #     links:
 #         - { name: "GitHub", icon: "fa6-brands:github", url: "https://github.com/windy1ike/younisekai" }
 #         - { name: "RSS", icon: "fa6-solid:rss", url: "/rss.xml" }

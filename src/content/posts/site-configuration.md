@@ -204,7 +204,7 @@ sidebar:
 profile:
     avatar: "/assets/images/avatar.svg"        # 相对 /public 目录
     name: "KazeYouni"
-    bio: "在异世界的间隙里，写点代码，也写点故事。"
+    bio: "写点代码，也写点故事。"
     links:
         - name: "GitHub"
           icon: "fa6-brands:github"
@@ -214,7 +214,7 @@ profile:
           url: "/rss.xml"
 
 announcement:
-    title: "异世界公告"
+    title: "站点公告"
     content: "欢迎来到 YouniSekai，这里记录着我的代码、文字与旅途。"
     closable: true          # 允许访客关闭公告
     link:

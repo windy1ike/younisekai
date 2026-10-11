@@ -8,7 +8,7 @@ export const LinkPresets: { [key in LinkPreset]: NavbarLink } = {
         name: i18n(I18nKey.home),
         url: "/",
         icon: "material-symbols:home",
-        description: "younisekai 主页，记录异世界的每一次落笔。",
+        description: "YouniSekai 主页：写点代码，也写点故事。",
     },
     [LinkPreset.Archive]: {
         name: i18n(I18nKey.archive),

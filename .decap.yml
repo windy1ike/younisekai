@@ -197,6 +197,36 @@ collections:
                                 - { name: "hue", label: "色相 (0-360)", widget: "number", value_type: "int", min: 0, max: 360, required: false, hint: "0 红 / 200 青 / 250 蓝绿 / 265 紫罗兰 / 345 粉" }
                           - { name: "defaultTheme", label: "默认深浅色", widget: "select", options: ["system", "light", "dark"], required: false }
 
+                          # ---------------- 首页横幅（主标题与副标题标语） ----------------
+                          - label: "首页横幅"
+                            name: "wallpaper"
+                            widget: "object"
+                            required: false
+                            fields:
+                                - label: "横幅（banner）配置"
+                                  name: "banner"
+                                  widget: "object"
+                                  required: false
+                                  fields:
+                                      - label: "横幅文本"
+                                        name: "homeText"
+                                        widget: "object"
+                                        required: false
+                                        fields:
+                                            - { name: "enable", label: "在主页显示文本", widget: "boolean", default: true, required: false }
+                                            - { name: "title", label: "主标题", widget: "string", required: false }
+                                            - { name: "subtitle", label: "副标题标语（可多条）", widget: "list", required: false, hint: "配合下面的打字机设置，每次打开页面随机显示其中一条" }
+                                            - label: "打字机效果"
+                                              name: "typewriter"
+                                              widget: "object"
+                                              required: false
+                                              fields:
+                                                  - { name: "enable", label: "启用打字机", widget: "boolean", default: true, required: false }
+                                                  - { name: "random", label: "随机取一条并固定（不轮换）", widget: "boolean", default: true, required: false }
+                                                  - { name: "speed", label: "打字速度 (毫秒)", widget: "number", value_type: "int", min: 0, required: false }
+                                                  - { name: "deleteSpeed", label: "删除速度 (毫秒)", widget: "number", value_type: "int", min: 0, required: false }
+                                                  - { name: "pauseTime", label: "打完后的暂停 (毫秒)", widget: "number", value_type: "int", min: 0, required: false }
+
                     # ---------------- 导航菜单 ----------------
                     - label: "导航菜单（留空则用主配置里的菜单）"
                       name: "navbar"
