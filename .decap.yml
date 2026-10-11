@@ -118,18 +118,19 @@ collections:
                     required: false,
                     hint: "留空则使用默认封面；也可以填写外链图片地址",
                 }
-            - # 发布日期
+            - # 发布日期（新建文章时自动填当前日期，一般不用改）
                 {
                     name: "published",
                     label: "发布日期",
                     widget: "datetime",
                     required: false,
+                    default: "{{now}}",
                     date_format: "YYYY-MM-DD",
                     time_format: false,
-                    hint: "留空则取文件的首次提交时间",
+                    hint: "新建文章时自动填当前日期；留空则取文件的首次提交时间",
                 }
 
-            # ==================== 开关：置顶、草稿、评论、加密、复制保护 ====================
+            # ==================== 开关：置顶、草稿、评论、复制保护 ====================
             - # 置顶
                 { name: "pinned", label: "置顶", widget: "boolean", default: false, required: false }
             - # 草稿
@@ -143,23 +144,6 @@ collections:
                 }
             - # 是否允许评论
                 { name: "comment", label: "允许评论", widget: "boolean", default: true, required: false }
-            - # 是否启用页面加密
-                {
-                    name: "encrypted",
-                    label: "启用加密",
-                    widget: "boolean",
-                    default: false,
-                    required: false,
-                    hint: "开启后访问该文章需要输入密码",
-                }
-            - # 访问密码
-                {
-                    name: "password",
-                    label: "访问密码",
-                    widget: "string",
-                    required: false,
-                    hint: "仅在「启用加密」为开时生效",
-                }
             - # 复制保护（折叠，平时不用展开）
                 name: "copyProtection"
                 label: "复制保护"
@@ -205,6 +189,15 @@ collections:
                 { name: "licenseName", label: "高级：许可证名称", widget: "string", required: false }
             - # 许可证链接
                 { name: "licenseUrl", label: "高级：许可证链接", widget: "string", required: false }
+            - # 页面加密（密码不在后台上填，改文件时手写 password 字段）
+                {
+                    name: "encrypted",
+                    label: "高级：启用页面加密",
+                    widget: "boolean",
+                    default: false,
+                    required: false,
+                    hint: "在编辑器里给该文件手写一行 password: 你的密码 才生效（后台不提供密码输入框）",
+                }
 
     - # 关于页面（单文件）
         name: "page_about"
