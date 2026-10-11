@@ -10,7 +10,7 @@ category: 站点公告
 tags: [Astro, 静态站点, 入门]
 lang: "zh_CN"
 pinned: true
-author: 游音
+author: KazeYouni
 comment: true
 draft: false
 ---

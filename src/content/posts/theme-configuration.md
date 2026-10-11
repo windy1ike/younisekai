@@ -9,7 +9,7 @@ coverInContent: false
 category: 主题定制
 tags: [主题定制, 站点配置]
 lang: "zh_CN"
-author: 游音
+author: KazeYouni
 comment: true
 draft: false
 ---

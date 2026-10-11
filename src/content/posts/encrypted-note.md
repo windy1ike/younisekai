@@ -9,7 +9,7 @@ coverInContent: false
 category: 主题定制
 tags: [内容加密, 站点配置]
 lang: "zh_CN"
-author: 游音
+author: KazeYouni
 comment: false
 encrypted: true
 password: "younisekai"

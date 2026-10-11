@@ -9,7 +9,7 @@ coverInContent: false
 category: 内容创作
 tags: [Mermaid, KaTeX, 排版]
 lang: "zh_CN"
-author: 游音
+author: KazeYouni
 comment: true
 draft: false
 ---

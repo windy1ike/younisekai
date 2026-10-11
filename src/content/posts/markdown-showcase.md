@@ -9,7 +9,7 @@ coverInContent: false
 category: 内容创作
 tags: [Markdown, 排版]
 lang: "zh_CN"
-author: 游音
+author: KazeYouni
 licenseName: CC BY 4.0
 licenseUrl: https://creativecommons.org/licenses/by/4.0/
 comment: true

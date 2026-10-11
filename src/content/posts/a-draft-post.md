@@ -8,7 +8,7 @@ category: 内容创作
 tags: [写作技巧, Markdown]
 lang: "zh_CN"
 pinned: false
-author: 游音
+author: KazeYouni
 comment: true
 draft: true
 ---

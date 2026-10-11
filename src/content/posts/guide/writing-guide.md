@@ -9,7 +9,7 @@ coverInContent: false
 category: 内容创作
 tags: [Markdown, 写作技巧, 排版]
 lang: "zh_CN"
-author: 游音
+author: KazeYouni
 sourceLink: ""
 comment: true
 draft: false
@@ -147,7 +147,7 @@ copyProtection:
 ## 作者、来源与许可
 
 ```yaml
-author: 游音
+author: KazeYouni
 sourceLink: https://example.com/original
 licenseName: CC BY 4.0
 licenseUrl: https://creativecommons.org/licenses/by/4.0/

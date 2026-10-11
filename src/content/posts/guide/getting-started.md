@@ -10,7 +10,7 @@ category: 入门指南
 tags: [入门, Astro, 站点配置]
 lang: "zh_CN"
 routeName: "start"
-author: 游音
+author: KazeYouni
 comment: true
 draft: false
 ---

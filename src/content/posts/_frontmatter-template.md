@@ -7,7 +7,7 @@ category: 内容创作
 tags: [写作技巧]
 lang: "zh_CN"
 pinned: false
-author: 游音
+author: KazeYouni
 comment: false
 draft: false
 ---
@@ -29,7 +29,7 @@ category: 内容创作            # 嵌套分类写成数组：[技术笔记, �
 tags: [Markdown, 排版]        # 2~4 个标签比较合适
 lang: "zh_CN"
 pinned: false
-author: 游音
+author: KazeYouni
 sourceLink: ""                # 转载或引用时填原始链接
 licenseName: ""               # 留空则使用站点默认协议
 licenseUrl: ""

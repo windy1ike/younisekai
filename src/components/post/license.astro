@@ -26,6 +26,14 @@ const className = Astro.props.class;
 const profileConf = profileConfig;
 const licenseConf = postConfig.license;
 const postUrl = sourceLink || propPostUrl || getPostUrlBySlug(id);
+
+// 作者一栏已移除：单人博客里它与侧栏资料卡重复，站内所有文章的 author 都是同一个名字。
+// 需要「客座作者」时，把下面这段放回模板里 `flex gap-6 mt-2` 的容器中即可：
+//
+//     <div>
+//         <div class="transition text-black/30 dark:text-white/30 text-sm">{i18n(I18nKey.author)}</div>
+//         <div class="transition text-black/75 dark:text-white/75 line-clamp-2">{author || profileConf.name}</div>
+//     </div>
 ---
 
 <div class={`relative transition overflow-hidden bg-(--license-block-bg) py-5 px-6 ${className}`}>
@@ -36,10 +44,6 @@ const postUrl = sourceLink || propPostUrl || getPostUrlBySlug(id);
         {postUrl}
     </a>
     <div class="flex gap-6 mt-2">
-        <div>
-            <div class="transition text-black/30 dark:text-white/30 text-sm">{i18n(I18nKey.author)}</div>
-            <div class="transition text-black/75 dark:text-white/75 line-clamp-2">{author || profileConf.name}</div>
-        </div>
         <div>
             <div class="transition text-black/30 dark:text-white/30 text-sm">{i18n(I18nKey.publishedAt)}</div>
             <div class="transition text-black/75 dark:text-white/75 line-clamp-2">{formatDateToYYYYMMDD(pubDate)}</div>

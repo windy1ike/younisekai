@@ -10,7 +10,7 @@ category: ["技术笔记", "前端"]
 tags: [前端, Tailwind CSS, 排版]
 lang: "zh_CN"
 pinned: false
-author: 游音
+author: KazeYouni
 licenseName: CC BY-NC-SA 4.0
 licenseUrl: https://creativecommons.org/licenses/by-nc-sa/4.0/
 comment: true

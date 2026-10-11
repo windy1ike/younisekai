@@ -298,28 +298,32 @@ const jsonLd = {
                         const minuteKey = langTranslations.minute;
                         const secondKey = langTranslations.second;
 
-                        let runtimeString = prefix + ' ';
-                        if (years > 0) {
-                            runtimeString += `${years} ${yearKey} `;
-                        }
-                        if (months > 0) {
-                            runtimeString += `${months} ${monthKey} `;
-                        }
-                        if (remainingDays > 0) {
-                            runtimeString += `${remainingDays} ${dayKey} `;
-                        }
-                        runtimeString += `${hours} ${hourKey} `;
-                        if (minutes < 10) {
-                            runtimeString += `0${minutes} ${minuteKey} `;
-                        } else {
-                            runtimeString += `${minutes} ${minuteKey} `;
-                        }
-                        if (secs < 10) {
-                            runtimeString += `0${secs} ${secondKey}`;
-                        } else {
-                            runtimeString += `${secs} ${secondKey}`;
-                        }
-                        document.getElementById("modifiedtime").innerHTML = runtimeString;
+                        // 相对时间的分档显示规则（越久远越粗略）：
+                        //   不足 1 分钟      → 只显示「秒」
+                        //   1 分钟 ~ 1 小时  → 只显示「分」（不再显示秒）
+                        //   1 小时 ~ 1 天    → 时 + 分
+                        //   1 天 ~ 1 个月    → 天 + 时（不再显示分钟与秒）
+                        //   1 个月 ~ 1 年    → 月 + 天（不再显示更细的单位）
+                        //   1 年以上         → 年 + 月
+                        // 即：最多显示两个相邻单位，且「分」及更细的单位只显示一个。
+                        const units = [
+                            [years, yearKey],
+                            [months, monthKey],
+                            [remainingDays, dayKey],
+                            [hours, hourKey],
+                            [minutes, minuteKey],
+                            [secs, secondKey],
+                        ];
+                        const firstIdx = units.findIndex(([value]) => value > 0);
+                        const startIdx = firstIdx < 0 ? units.length - 1 : firstIdx;
+                        // 下标 0~3 是「时」及更粗的单位 → 显示两个；4、5 是「分」「秒」→ 只显示一个
+                        const showCount = startIdx <= 3 ? 2 : 1;
+                        const parts = units
+                            .slice(startIdx, startIdx + showCount)
+                            .filter(([value], index) => index === 0 || value > 0)
+                            .map(([value, label]) => `${value} ${label}`);
+                        document.getElementById("modifiedtime").innerHTML =
+                            `${prefix} ${parts.join(' ')}`;
                     }
                     setInterval(runtime, 1000);
                 </script>

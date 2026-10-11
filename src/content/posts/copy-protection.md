@@ -12,7 +12,7 @@ copyProtection:
 category: 主题定制
 tags: [复制保护, 站点配置]
 lang: "zh_CN"
-author: 游音
+author: KazeYouni
 comment: true
 draft: false
 ---
