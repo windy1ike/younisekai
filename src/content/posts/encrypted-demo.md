@@ -1,8 +1,7 @@
 ---
 title: 加密文章演示
 directoryTitle: 加密演示
-published: 2026-07-05
-updated: 2026-07-12
+published: 2026-10-11
 description: 一篇加密文章的活演示，解锁密码是 younisekai——写在摘要里只是为了让你能读到正文。
 cover: /assets/images/covers/cover-06.svg
 coverInContent: false

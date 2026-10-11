@@ -1,8 +1,7 @@
 ---
 title: Markdown 与扩展语法速查
 directoryTitle: 语法速查
-published: 2026-04-06
-updated: 2026-05-11
+published: 2026-10-11
 description: 把文字样式、列表、表格、代码块、提示框、Mermaid 图表、KaTeX 公式与 GitHub 卡片一次性演示清楚，写文章时可以直接照着抄。
 cover: /assets/images/covers/cover-03.svg
 coverInContent: false
@@ -10,8 +9,6 @@ category: 使用指南
 tags: [Markdown, Mermaid, KaTeX]
 lang: "zh_CN"
 author: KazeYouni
-licenseName: "CC BY 4.0"
-licenseUrl: "https://creativecommons.org/licenses/by/4.0/"
 comment: true
 draft: false
 ---

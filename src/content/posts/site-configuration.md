@@ -1,8 +1,7 @@
 ---
 title: 站点配置与进阶功能
 directoryTitle: 站点配置
-published: 2026-06-08
-updated: 2026-07-30
+published: 2026-10-11
 description: 站点信息、主题色相、壁纸、导航菜单、侧栏挂件、评论、复制保护、草稿与加密，全部集中在一个 YAML 里，这里逐项说明怎么改。
 cover: /assets/images/covers/cover-05.svg
 coverInContent: false

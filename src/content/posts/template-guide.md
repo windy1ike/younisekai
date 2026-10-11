@@ -1,8 +1,7 @@
 ---
 title: 模板使用指南
 directoryTitle: ""
-published: 2026-03-01
-updated: 2026-03-04
+published: 2026-10-11
 description: YouniSekai 是什么、目录长什么样、十分钟怎么写出第一篇，以及 frontmatter 每个字段的完整说明。
 cover: /assets/images/covers/cover-01.svg
 coverInContent: false
@@ -122,7 +121,7 @@ npm run new-post -- "随笔.mdx"
 ```markdown
 ---
 title: 我的第一篇笔记
-published: 2026-03-01
+published: 2026-10-11
 description: 一句话说清这篇写的是什么。
 ---
 
@@ -179,8 +178,7 @@ description: 一句话说清这篇写的是什么。
 推荐 ISO 8601 的 `YYYY-MM-DD`，需要精确到时间就写 `YYYY-MM-DDTHH:mm:ss`。`published` 决定排序，`updated` 只影响「最后修改于多久之前」的展示：
 
 ```yaml
-published: 2026-03-01
-updated: 2026-03-04
+published: 2026-10-11
 ```
 
 没有写 `published` 时，构建会依次尝试读取该文件的 Git 首次提交时间、文件创建时间。为了排序稳定，公开发布的文章建议都显式写上日期。
