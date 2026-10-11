@@ -84,52 +84,21 @@ collections:
         public_folder: ""
         # 字段列表（与 src/content.config.ts 中 posts 集合的 schema 一一对应）
         fields:
+            # ==================== 写作区：日常只碰这三个 ====================
             - # 标题
                 { name: "title", label: "标题", widget: "string" }
-            - # 侧栏目录名称
-                {
-                    name: "directoryTitle",
-                    label: "侧栏目录名称",
-                    widget: "string",
-                    required: false,
-                    hint: "左侧目录树中显示的名称，留空则使用标题",
-                }
-            - # 发布日期
-                {
-                    name: "published",
-                    label: "发布日期",
-                    widget: "datetime",
-                    required: false,
-                    date_format: "YYYY-MM-DD",
-                    time_format: false,
-                }
-            - # 更新日期
-                {
-                    name: "updated",
-                    label: "更新日期",
-                    widget: "datetime",
-                    required: false,
-                    date_format: "YYYY-MM-DD",
-                    time_format: false,
-                }
             - # 描述
                 {
                     name: "description",
                     label: "描述",
                     widget: "text",
                     required: false,
-                    hint: "文章摘要，用于首页卡片、RSS 与搜索引擎",
+                    hint: "一句话摘要，用于首页卡片、RSS 与搜索引擎；留空会自动截取正文开头",
                 }
-            - # 封面图
-                {
-                    name: "cover",
-                    label: "封面",
-                    widget: "image",
-                    required: false,
-                    hint: "留空则使用默认封面；也可以填写外链图片地址",
-                }
-            - # 正文中是否显示封面
-                { name: "coverInContent", label: "正文中显示封面", widget: "boolean", default: false, required: false }
+            - # 正文（放在元数据之前，打开就能写）
+                { name: "body", label: "正文", widget: "markdown" }
+
+            # ==================== 归档信息：分类、标签、封面、时间 ====================
             - # 分类（列表的每一项代表一级分类，支持多层嵌套）
                 {
                     name: "category",
@@ -141,14 +110,26 @@ collections:
                 }
             - # 标签
                 { name: "tags", label: "标签", widget: "list", default: [], required: false }
-            - # 语言
+            - # 封面图
                 {
-                    name: "lang",
-                    label: "语言",
-                    widget: "string",
+                    name: "cover",
+                    label: "封面",
+                    widget: "image",
                     required: false,
-                    hint: "留空表示使用站点默认语言",
+                    hint: "留空则使用默认封面；也可以填写外链图片地址",
                 }
+            - # 发布日期
+                {
+                    name: "published",
+                    label: "发布日期",
+                    widget: "datetime",
+                    required: false,
+                    date_format: "YYYY-MM-DD",
+                    time_format: false,
+                    hint: "留空则取文件的首次提交时间",
+                }
+
+            # ==================== 开关：置顶、草稿、评论、加密、复制保护 ====================
             - # 置顶
                 { name: "pinned", label: "置顶", widget: "boolean", default: false, required: false }
             - # 草稿
@@ -160,14 +141,6 @@ collections:
                     required: false,
                     hint: "草稿不会出现在正式站点中",
                 }
-            - # 作者
-                { name: "author", label: "作者", widget: "string", required: false }
-            - # 来源链接
-                { name: "sourceLink", label: "来源链接", widget: "string", required: false }
-            - # 许可证名称
-                { name: "licenseName", label: "许可证名称", widget: "string", required: false }
-            - # 许可证链接
-                { name: "licenseUrl", label: "许可证链接", widget: "string", required: false }
             - # 是否允许评论
                 { name: "comment", label: "允许评论", widget: "boolean", default: true, required: false }
             - # 是否启用页面加密
@@ -187,7 +160,7 @@ collections:
                     required: false,
                     hint: "仅在「启用加密」为开时生效",
                 }
-            - # 复制保护
+            - # 复制保护（折叠，平时不用展开）
                 name: "copyProtection"
                 label: "复制保护"
                 widget: "object"
@@ -198,16 +171,40 @@ collections:
                     - { name: "blockClipboard", label: "禁止复制粘贴", widget: "boolean", default: false, required: false }
                     - { name: "blockContextMenu", label: "禁止右键菜单", widget: "boolean", default: false, required: false }
                     - { name: "blockDevTools", label: "禁止开发者工具快捷键", widget: "boolean", default: false, required: false }
+
+            # ==================== 高级（平时不用管）====================
             - # 自定义路径
                 {
                     name: "routeName",
-                    label: "自定义路径",
+                    label: "高级：自定义路径",
                     widget: "string",
                     required: false,
                     hint: "留空则使用文件名作为文章 URL 片段",
                 }
-            - # 正文
-                { name: "body", label: "正文", widget: "markdown" }
+            - # 侧栏目录名称
+                {
+                    name: "directoryTitle",
+                    label: "高级：侧栏目录名称",
+                    widget: "string",
+                    required: false,
+                    hint: "左侧目录树中显示的名称，留空则使用标题",
+                }
+            - # 语言
+                {
+                    name: "lang",
+                    label: "高级：语言",
+                    widget: "string",
+                    required: false,
+                    hint: "留空表示使用站点默认语言",
+                }
+            - # 作者
+                { name: "author", label: "高级：作者", widget: "string", required: false }
+            - # 来源链接
+                { name: "sourceLink", label: "高级：来源链接", widget: "string", required: false }
+            - # 许可证名称
+                { name: "licenseName", label: "高级：许可证名称", widget: "string", required: false }
+            - # 许可证链接
+                { name: "licenseUrl", label: "高级：许可证链接", widget: "string", required: false }
 
     - # 关于页面（单文件）
         name: "page_about"
