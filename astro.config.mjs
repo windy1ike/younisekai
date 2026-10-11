@@ -64,12 +64,13 @@ const adapter = !enableCmsOauth
  * 站点部署的「基准路径」：子路径部署时所有资源与链接都要带上它。
  *
  * 优先读环境变量 BASE_PATH，方便同一个仓库同时部署到多处而不用改代码：
- *   - Cloudflare Pages / Vercel / Netlify / 自定义域名（根目录）：BASE_PATH=/
+ *   - Cloudflare Pages / Vercel / Netlify / 自定义域名（根目录）：BASE_PATH=/（默认）
  *   - GitHub Pages 项目站点 https://<用户名>.github.io/<仓库名>/：BASE_PATH=/<仓库名>/
+ *     （本仓库的 GitHub Pages 部署已移除，如需恢复就在工作流里设这个变量）
  *
  * 站点绝对地址同理可用 SITE_URL 覆盖 younisekai.config.yaml 里的 siteURL。
  */
-const BASE_PATH = process.env.BASE_PATH || "/younisekai/";
+const BASE_PATH = process.env.BASE_PATH || "/";
 
 /**
  * 后台管理界面的路由（默认 /admin）。

@@ -321,26 +321,17 @@ frontmatter —— 不在清单里的字段会被丢掉。所以本项目的做�
 
 **部署前必须让「两处地址」与真实部署地址一致**，否则资源与站内链接会 404：
 
-| 位置 | 改什么 | 根目录部署 | 子路径部署（GitHub Pages 项目站点） |
+| 位置 | 改什么 | 根目录部署（Cloudflare / Vercel / 自定义域名） | 子路径部署（GitHub Pages 项目站点） |
 | --- | --- | --- | --- |
 | `younisekai.config.yaml` | `site.siteURL` | `https://example.com/` | `https://<用户名>.github.io/<仓库名>/` |
-| `astro.config.mjs` | `BASE_PATH`（同时用作 `base`） | `"/"` | `"/<仓库名>/"` |
+| `astro.config.mjs` | `BASE_PATH`（同时用作 `base`） | `"/"`（默认） | `"/<仓库名>/"` |
 
+也可以用部署平台的环境变量 `SITE_URL` / `BASE_PATH` 覆盖这两处的默认值，这样同一个仓库能同时部署到多处。
 `BASE_PATH` 会被 Astro 用在资源路径上；正文里手写的 `/posts/xxx/`、`/assets/x.png` 以及配置里的
 `profile.links`、`announcement.link.url` 这类站内地址，也由 `src/plugins/rehype-base-path.mjs`
 与 `resolveUrl()` 自动补上前缀，所以文章内容不需要改写法。
 
-### GitHub Pages
-
-仓库里带了 `.github/workflows/deploy.yml`：
-
-1. 仓库 **Settings → Pages → Build and deployment → Source** 选 **GitHub Actions**
-2. 按上表确认 `siteURL` 与 `BASE_PATH`（`https://<用户名>.github.io/<仓库名>/` 这种项目站点必须加前缀）
-3. 推到 `main` 分支（或在 Actions 里手动触发 `deploy`），剩下的自动完成
-4. 想用自定义域名，就在 `public/` 下加一个 `CNAME` 文件写上域名，并把 DNS 的 CNAME 记录指向 `<用户名>.github.io`，
-   然后把 `siteURL` 改成 `https://你的域名/`、`BASE_PATH` 改回 `"/"`
-
-### Cloudflare Pages（想用网页后台就选它）
+### Cloudflare Pages（当前使用的方案）
 
 Cloudflare Pages 支持服务端渲染，是"在线写稿"最省事的落点（免费额度足够个人博客）：
 
@@ -360,11 +351,18 @@ Cloudflare Pages 支持服务端渲染，是"在线写稿"最省事的落点（�
      ```
 3. 部署完成后你会拿到 `https://<项目名>.pages.dev` —— 把这个地址填进 GitHub OAuth App 的
    Homepage URL 与 `回调地址 + /oauth/callback`，并同步更新 `.decap.yml` 里的
-   `site_domain` / `base_url` / `site_url` / `logo_url`，再推一次代码
+   `site_domain` / `base_url` / `site_url` / `logo_url`（或直接跑 `npm run set-domain -- https://你的域名/`），再推一次代码
 4. 之后访问 `https://<项目名>.pages.dev/studio/` 就能登录写稿
 
-> 同一个仓库可以同时部署到 GitHub Pages（纯静态，无后台）和 Cloudflare Pages（带后台）：
-> 两边的差别只由 `BASE_PATH` 与 `SITE_URL` 两个环境变量决定，`ENABLE_CMS_OAUTH` 只在 Cloudflare 那侧设置。
+### 可选：改用 GitHub Pages
+
+本仓库**当前没有使用** GitHub Pages（它不支持服务端渲染，后台无法在线登录）。如果你想改回纯静态托管：
+
+1. 加一个工作流（`actions/configure-pages` → `npm run build` → `actions/upload-pages-artifact` → `actions/deploy-pages`），
+   并在构建步骤里设 `BASE_PATH=/<仓库名>/`、`SITE_URL=https://<用户名>.github.io/<仓库名>/`
+2. 仓库 **Settings → Pages → Build and deployment → Source** 选 **GitHub Actions**
+3. 用自定义域名的话，在 `public/` 加 `CNAME` 文件写域名、DNS 加 CNAME 记录指向 `<用户名>.github.io`，
+   再把 `BASE_PATH` 改回 `"/"`、`SITE_URL` 改成 `https://你的域名/`
 > 想绑自定义域名，在 Cloudflare 的 **Custom domains** 里加域名，然后把 `SITE_URL` 与 `.decap.yml` 的域名一起换掉即可。
 
 ### Netlify / Vercel
