@@ -1,15 +1,25 @@
-# 推送到 main 分支时自动构建并发布到 GitHub Pages
+# 发布到 GitHub Pages（目前设为手动触发，需要时在 Actions 页面点 "Run workflow"）
 #
-# 使用前：
+# 为什么不是 push 自动触发：
+#   GitHub Pages 在免费账号上只能发布「公开仓库」；仓库是私有时需要 GitHub Pro。
+#   自动触发会导致每次 push 都跑一次必然失败的发布，所以先关掉。
+#
+# 满足下面任一条件后，把 push 触发器加回来即可变成自动发布：
+#   - 把仓库改成公开（Settings → General → 最下方 Change visibility）
+#   - 或账号升级到 GitHub Pro
+#
+# 启用前还要：
 #   1. 仓库 Settings → Pages → Source 选择 "GitHub Actions"
 #   2. 把 astro.config.mjs 里的 site 改成自己的地址
 #      项目站点（https://<用户名>.github.io/<仓库名>/）还需要设置 base: '/<仓库名>'
+#
+# 如果不想用 Pages，用 Vercel / Netlify 连这个私有仓库也能免费部署（见 README）。
 name: Deploy to GitHub Pages
 
 on:
-  push:
-    branches: [main]
   workflow_dispatch:
+  # push:
+  #   branches: [main]
 
 permissions:
   contents: read
