@@ -1,0 +1,12 @@
+{
+    "title": "booklog 读书笔记系统",
+    "description": "把散落在各种 App 里的读书笔记收拢到一处：摘录、批注、评分与年度阅读回顾，正在做数据模型的草稿。",
+    "image": "./cover.svg",
+    "category": "software",
+    "techStack": ["Astro", "TypeScript", "SQLite"],
+    "status": "planned",
+    "startDate": "2026-11-01",
+    "endDate": "",
+    "featured": false,
+    "tags": ["阅读", "知识管理"]
+}

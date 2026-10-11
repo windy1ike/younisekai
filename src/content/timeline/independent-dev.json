@@ -1,0 +1,25 @@
+{
+    "title": "成为独立开发者",
+    "description": "离开团队后开始独立接项目，把一部分时间留给自己的开源小工具，本站也是在那个阶段有了雏形。",
+    "type": "work",
+    "startDate": "2025-07-01",
+    "endDate": "",
+    "location": "远程",
+    "organization": "自由职业",
+    "position": "全栈开发",
+    "skills": ["TypeScript", "Node.js", "Astro"],
+    "achievements": [
+        "完成第一个长期外包项目并交付",
+        "把个人博客从零搭起来并稳定运行一年"
+    ],
+    "links": [
+        {
+            "name": "作品集",
+            "url": "https://example.com/portfolio",
+            "type": "other"
+        }
+    ],
+    "icon": "material-symbols:work",
+    "color": "#22C55E",
+    "featured": true
+}

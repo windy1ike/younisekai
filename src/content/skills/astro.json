@@ -1,0 +1,13 @@
+{
+    "name": "Astro",
+    "description": "以内容为中心的静态站点框架，本站的页面路由、内容集合与图片管线都由它负责。",
+    "icon": "logos:astro-icon",
+    "category": "frontend",
+    "level": "advanced",
+    "experience": {
+        "years": 2,
+        "months": 6
+    },
+    "projects": ["younisekai"],
+    "color": "#BC52EE"
+}

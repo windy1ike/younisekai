@@ -1,0 +1,64 @@
+name: 问题反馈
+description: 反馈一个 Bug，帮助我们修复它
+title: "[Bug]: "
+labels: ["bug"]
+body:
+  - type: markdown
+    attributes:
+      value: |
+        感谢你花时间填写这份反馈！请尽量把信息写完整，方便定位问题。
+  - type: textarea
+    id: bug-description
+    attributes:
+      label: 问题描述
+      description: 请清晰简洁地描述这个 Bug 是什么。
+    validations:
+      required: true
+  - type: textarea
+    id: to-reproduce
+    attributes:
+      label: 复现步骤
+      description: 请描述如何复现这个问题。
+      placeholder: |
+        1. 打开 '...'
+        2. 点击 '...'
+        3. 向下滚动到 '...'
+        4. 出现报错
+    validations:
+      required: true
+  - type: textarea
+    id: expected-behavior
+    attributes:
+      label: 期望结果
+      description: 请描述你期望发生什么。
+    validations:
+      required: true
+  - type: textarea
+    id: logs
+    attributes:
+      label: 相关日志
+      description: 如果有构建日志或控制台报错，请粘贴在这里（注意隐去密钥等敏感信息）。
+      render: shell
+    validations:
+      required: false
+  - type: dropdown
+    id: os
+    attributes:
+      label: 操作系统
+      multiple: true
+      options:
+        - Windows
+        - macOS
+        - Linux
+        - Android
+        - iOS
+  - type: input
+    id: browser
+    attributes:
+      label: 浏览器
+      placeholder: 例如 Chrome 131、Safari 18
+  - type: textarea
+    id: additional-context
+    attributes:
+      label: 补充信息
+      description: 任何其他有助于排查问题的信息。

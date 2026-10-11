@@ -1,0 +1,14 @@
+{
+    "title": "notekit 命令行笔记工具",
+    "description": "随手记一条命令就能存下想法的本地笔记工具，支持全文搜索、标签过滤和 Markdown 导出。",
+    "image": "./cover.svg",
+    "category": "software",
+    "techStack": ["Node.js", "TypeScript"],
+    "status": "completed",
+    "liveDemo": "https://example.com/notekit",
+    "sourceCode": "https://example.com/notekit/repository",
+    "startDate": "2026-01-08",
+    "endDate": "2026-03-20",
+    "featured": false,
+    "tags": ["命令行", "效率工具"]
+}

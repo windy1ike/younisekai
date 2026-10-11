@@ -1,0 +1,84 @@
+---
+import { postConfig } from "@/config";
+
+
+interface Props {
+    path: string;
+}
+
+const config = {
+    ...postConfig.comment.twikoo,
+    el: "#comment-container",
+    path: Astro.props.path,
+};
+---
+
+<div id="comment-container"></div>
+<!--
+    从 CDN 加载 Twikoo 脚本与样式。
+    如需离线部署，可换回本地文件：把 twikoo.min.js / twikoo.css 放回 public/assets 下，
+    再将下面的 src / href 改回本地路径（如 "/assets/js/twikoo.all.min.js"、"/assets/css/twikoo.css"）。
+-->
+<script is:inline src="https://cdn.jsdelivr.net/npm/twikoo@1.6.44/dist/twikoo.min.js"></script>
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/twikoo@1.6.44/dist/twikoo.css" />
+<script is:inline define:vars={{ config }}>
+    function getCurrentPath() {
+        const pathname = window.location.pathname;
+        return pathname.endsWith("/") && pathname.length > 1
+            ? pathname.slice(0, -1)
+            : pathname;
+    }
+
+    function createTwikooConfig() {
+        return {
+            ...config,
+            path: getCurrentPath(),
+            el: "#comment-container",
+        };
+    }
+
+    function initTwikoo() {
+        if (typeof twikoo !== "undefined") {
+            const commentEl = document.getElementById("comment-container");
+            if (commentEl) {
+                commentEl.innerHTML = "";
+                const dynamicConfig = createTwikooConfig();
+                console.log("[Twikoo] 初始化配置:", dynamicConfig);
+                twikoo
+                    .init(dynamicConfig)
+                    .then(() => {
+                        console.log("[Twikoo] 初始化完成");
+                    })
+                    .catch((error) => {
+                        console.error("[Twikoo] 初始化失败:", error);
+                    });
+            }
+        } else {
+            setTimeout(initTwikoo, 500);
+        }
+    }
+
+    document.addEventListener("DOMContentLoaded", initTwikoo);
+
+    if (window.swup && window.swup.hooks) {
+        window.swup.hooks.on("content:replace", function () {
+            setTimeout(initTwikoo, 200);
+        });
+    } else {
+        document.addEventListener("swup:enable", function () {
+            if (window.swup && window.swup.hooks) {
+                window.swup.hooks.on("content:replace", function () {
+                    setTimeout(initTwikoo, 200);
+                });
+            }
+        });
+    }
+
+    document.addEventListener("younisekai:page:loaded", function () {
+        const commentEl = document.getElementById("comment-container");
+        if (commentEl) {
+            console.log("[Twikoo] 通过自定义事件重新初始化");
+            initTwikoo();
+        }
+    });
+</script>

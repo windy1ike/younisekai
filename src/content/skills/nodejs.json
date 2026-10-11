@@ -1,0 +1,13 @@
+{
+    "name": "Node.js",
+    "description": "写构建脚本、命令行工具和内容校验脚本的日常工具链，也是 notekit 的运行环境。",
+    "icon": "logos:nodejs-icon",
+    "category": "backend",
+    "level": "advanced",
+    "experience": {
+        "years": 2,
+        "months": 8
+    },
+    "projects": ["notekit"],
+    "color": "#339933"
+}

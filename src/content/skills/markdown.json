@@ -1,0 +1,13 @@
+{
+    "name": "Markdown",
+    "description": "写作与文档的主力格式，配合本站的扩展语法写提示框、图表和数学公式。",
+    "icon": "mdi:language-markdown",
+    "category": "tools",
+    "level": "expert",
+    "experience": {
+        "years": 4,
+        "months": 5
+    },
+    "projects": ["younisekai"],
+    "color": "#4B5563"
+}

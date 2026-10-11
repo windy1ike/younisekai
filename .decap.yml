@@ -1,0 +1,448 @@
+# ==============================================================================
+# younisekai 后台管理系统 (Decap CMS) 配置
+#
+# 说明：
+#   1. 这是 Decap CMS 后台的配置，字段要与 src/content.config.ts 的 schema 保持一致；
+#      修改 frontmatter 字段时，请同步更新本文件、src/content.config.ts 与 _frontmatter.json。
+#   2. 后台地址为「站点地址 + /admin/」（例如 https://your-domain.com/admin/）；
+#      在线登录需要配置 GitHub OAuth 并在 astro.config.mjs 中启用 oauth 集成，
+#      详见 .env.example。纯静态部署时后台无法在线登录，可直接用编辑器改文件。
+#   3. 参考自 Twilight (MIT)
+# ==============================================================================
+
+# 后台系统配置（GitHub 后端：后台的改动会以 commit 的形式提交到仓库）
+backend:
+    name: github
+    repo: yourname/younisekai # 请替换为你的 GitHub 仓库（格式：用户名/仓库名）
+    branch: main # 请替换为你的分支名称
+    site_domain: your-domain.com # 请替换为你的域名（不带协议）
+    base_url: https://your-domain.com # 请替换为你的站点 URL（OAuth 回调使用）
+    auth_endpoint: oauth # OAuth 路由由 decap-cms-oauth-astro 集成提供
+
+# 后台访问地址，Decap CMS 用它拼接后台与站点之间的链接，请改成自己的域名
+site_url: https://your-domain.com
+
+# 后台左上角 LOGO，可换成自己的图片地址（默认为站点 favicon）
+logo_url: https://your-domain.com/favicon/icon-light.svg
+
+# 设置后台系统语言 (zh_Hans 简体中文 | en 英文 | ...)
+locale: zh_Hans
+
+# 媒体目录配置
+# 全局默认：后台上传的图片存放在 public/assets/images 下，页面中以 /assets/images/... 访问
+media_folder: "public/assets/images"
+public_folder: "/assets/images"
+
+# 本地写稿模式：开启后，在 localhost 上访问 /admin/ 时后台会直连本地文件，
+# 不需要 GitHub OAuth。用法：另开一个终端跑 `npx decap-server`，再 `npm run dev`。
+# 线上部署时该选项会被自动忽略（只有 localhost 才会走本地后端）。
+local_backend: true
+
+# 内容管理配置
+collections:
+    - # 文章
+        # 集合名称（内部标识，请勿随意改动）
+        name: "posts"
+        # 后台显示标签
+        label: "文章"
+        label_singular: "文章"
+        # 内容存储目录
+        folder: "src/content/posts"
+        # 目录嵌套配置：后台按子目录树管理文章
+        meta:
+            # 路径配置
+            path:
+                # 后台显示标签
+                label: "路径"
+                # 记录路径的部件（隐藏即可）
+                widget: hidden
+                # 索引文件名称（用于嵌套集合）
+                index_file: "_index"
+        nested:
+            # 最大嵌套深度
+            depth: 10
+            # 摘要模板，用于树状菜单中文件夹的显示名称
+            summary: "{{dirname}}"
+            # 是否支持子文件夹
+            subfolders: false # 文章是独立的 .md 文件，设为 false 以防止 CMS 去寻找子目录下的 _index.md
+        # 允许创建新条目
+        create: true
+        # 文件命名规则
+        slug: "{{slug}}"
+        # 集合内的媒体目录留空：上传的图片会以相对路径（./xxx.svg）写入文章同级目录，
+        # 与 frontmatter 中 cover: "./xxx.svg" 的相对路径写法保持一致
+        media_folder: ""
+        public_folder: ""
+        # 字段列表（与 src/content.config.ts 中 posts 集合的 schema 一一对应）
+        fields:
+            - # 标题
+                { name: "title", label: "标题", widget: "string" }
+            - # 侧栏目录名称
+                {
+                    name: "directoryTitle",
+                    label: "侧栏目录名称",
+                    widget: "string",
+                    required: false,
+                    hint: "左侧目录树中显示的名称，留空则使用标题",
+                }
+            - # 发布日期
+                {
+                    name: "published",
+                    label: "发布日期",
+                    widget: "datetime",
+                    required: false,
+                    date_format: "YYYY-MM-DD",
+                    time_format: false,
+                }
+            - # 更新日期
+                {
+                    name: "updated",
+                    label: "更新日期",
+                    widget: "datetime",
+                    required: false,
+                    date_format: "YYYY-MM-DD",
+                    time_format: false,
+                }
+            - # 描述
+                {
+                    name: "description",
+                    label: "描述",
+                    widget: "text",
+                    required: false,
+                    hint: "文章摘要，用于首页卡片、RSS 与搜索引擎",
+                }
+            - # 封面图
+                {
+                    name: "cover",
+                    label: "封面",
+                    widget: "image",
+                    required: false,
+                    hint: "留空则使用默认封面；也可以填写外链图片地址",
+                }
+            - # 正文中是否显示封面
+                { name: "coverInContent", label: "正文中显示封面", widget: "boolean", default: false, required: false }
+            - # 分类（列表的每一项代表一级分类，支持多层嵌套）
+                {
+                    name: "category",
+                    label: "分类",
+                    widget: "list",
+                    required: false,
+                    default: [],
+                    hint: '每一项代表一级分类，例如 ["教程", "快速开始"] 表示「教程 / 快速开始」；单层分类写一项即可',
+                }
+            - # 标签
+                { name: "tags", label: "标签", widget: "list", default: [], required: false }
+            - # 语言
+                {
+                    name: "lang",
+                    label: "语言",
+                    widget: "string",
+                    required: false,
+                    hint: "留空表示使用站点默认语言",
+                }
+            - # 置顶
+                { name: "pinned", label: "置顶", widget: "boolean", default: false, required: false }
+            - # 草稿
+                {
+                    name: "draft",
+                    label: "草稿",
+                    widget: "boolean",
+                    default: false,
+                    required: false,
+                    hint: "草稿不会出现在正式站点中",
+                }
+            - # 作者
+                { name: "author", label: "作者", widget: "string", required: false }
+            - # 来源链接
+                { name: "sourceLink", label: "来源链接", widget: "string", required: false }
+            - # 许可证名称
+                { name: "licenseName", label: "许可证名称", widget: "string", required: false }
+            - # 许可证链接
+                { name: "licenseUrl", label: "许可证链接", widget: "string", required: false }
+            - # 是否允许评论
+                { name: "comment", label: "允许评论", widget: "boolean", default: true, required: false }
+            - # 是否启用页面加密
+                {
+                    name: "encrypted",
+                    label: "启用加密",
+                    widget: "boolean",
+                    default: false,
+                    required: false,
+                    hint: "开启后访问该文章需要输入密码",
+                }
+            - # 访问密码
+                {
+                    name: "password",
+                    label: "访问密码",
+                    widget: "string",
+                    required: false,
+                    hint: "仅在「启用加密」为开时生效",
+                }
+            - # 复制保护
+                name: "copyProtection"
+                label: "复制保护"
+                widget: "object"
+                required: false
+                collapsed: true
+                fields:
+                    - { name: "blockSelection", label: "禁止选中文本", widget: "boolean", default: false, required: false }
+                    - { name: "blockClipboard", label: "禁止复制粘贴", widget: "boolean", default: false, required: false }
+                    - { name: "blockContextMenu", label: "禁止右键菜单", widget: "boolean", default: false, required: false }
+                    - { name: "blockDevTools", label: "禁止开发者工具快捷键", widget: "boolean", default: false, required: false }
+            - # 自定义路径
+                {
+                    name: "routeName",
+                    label: "自定义路径",
+                    widget: "string",
+                    required: false,
+                    hint: "留空则使用文件名作为文章 URL 片段",
+                }
+            - # 正文
+                { name: "body", label: "正文", widget: "markdown" }
+
+    - # 关于页面（单文件）
+        name: "page_about"
+        label: "关于页面"
+        files:
+            - # src/content/about.md
+                name: "about"
+                label: "关于"
+                file: "src/content/about.md"
+                fields:
+                    - { name: "title", label: "标题", widget: "string", required: false }
+                    - { name: "description", label: "描述", widget: "string", required: false }
+                    - { name: "body", label: "正文", widget: "markdown" }
+
+    - # 友链（列表：每个条目一个 JSON 文件）
+        name: "friends"
+        label: "友链"
+        label_singular: "友链"
+        folder: "src/content/friends"
+        create: true
+        slug: "{{slug}}"
+        format: "json"
+        fields:
+            - { name: "title", label: "站点名称", widget: "string" }
+            - { name: "imgurl", label: "头像链接", widget: "string" }
+            - { name: "desc", label: "站点描述", widget: "text" }
+            - { name: "siteurl", label: "站点链接", widget: "string" }
+            - { name: "tags", label: "标签", widget: "list", required: false, default: [] }
+
+    - # 友链说明页（单文件）
+        name: "page_friends"
+        label: "友链说明页"
+        files:
+            - # src/content/friends.md
+                name: "friends"
+                label: "友链说明"
+                file: "src/content/friends.md"
+                fields:
+                    - { name: "title", label: "标题", widget: "string", required: false }
+                    - { name: "description", label: "描述", widget: "string", required: false }
+                    - { name: "body", label: "正文", widget: "markdown" }
+
+    - # 项目
+        name: "projects"
+        label: "项目"
+        label_singular: "项目"
+        folder: "src/content/projects"
+        # 条目路径配置：{文件夹}/{文件名}
+        path: "{{slug}}/{{slug}}"
+        create: true
+        slug: "{{slug}}"
+        format: "json"
+        media_folder: "" # 留空表示使用相对路径（图片放在项目同级目录）
+        public_folder: ""
+        fields:
+            - { name: "title", label: "项目标题", widget: "string" }
+            - { name: "description", label: "项目描述", widget: "text" }
+            - { name: "image", label: "项目封面", widget: "image", required: false }
+            - # 项目类别
+                name: "category"
+                label: "项目类别"
+                widget: "select"
+                options:
+                    - { label: "库 / 框架", value: "library" }
+                    - { label: "人工智能", value: "ai" }
+                    - { label: "软件", value: "software" }
+                    - { label: "网站", value: "website" }
+                    - { label: "游戏", value: "game" }
+            - { name: "techStack", label: "技术栈", widget: "list", default: [] }
+            - # 项目状态
+                name: "status"
+                label: "项目状态"
+                widget: "select"
+                options:
+                    - { label: "已完成", value: "completed" }
+                    - { label: "进行中", value: "in-progress" }
+                    - { label: "计划中", value: "planned" }
+            - { name: "liveDemo", label: "在线演示", widget: "string", required: false }
+            - { name: "sourceCode", label: "源代码", widget: "string", required: false }
+            - { name: "startDate", label: "开始日期", widget: "datetime" }
+            - { name: "endDate", label: "结束日期", widget: "datetime", required: false }
+            - { name: "featured", label: "是否精选", widget: "boolean", required: false, default: false }
+            - { name: "tags", label: "标签", widget: "list", required: false, default: [] }
+
+    - # 技能
+        name: "skills"
+        label: "技能"
+        label_singular: "技能"
+        folder: "src/content/skills"
+        create: true
+        slug: "{{slug}}"
+        format: "json"
+        fields:
+            - { name: "name", label: "技能名称", widget: "string" }
+            - { name: "description", label: "技能描述", widget: "text" }
+            - { name: "icon", label: "图标", widget: "string", hint: "Iconify 图标名，例如 logos:astro-icon" }
+            - # 技能类别
+                name: "category"
+                label: "技能类别"
+                widget: "select"
+                options:
+                    - { label: "人工智能", value: "ai" }
+                    - { label: "后端", value: "backend" }
+                    - { label: "客户端", value: "client" }
+                    - { label: "前端", value: "frontend" }
+                    - { label: "数据库", value: "database" }
+                    - { label: "引擎", value: "engines" }
+                    - { label: "工具", value: "tools" }
+                    - { label: "其他", value: "others" }
+            - # 熟练程度
+                name: "level"
+                label: "熟练程度"
+                widget: "select"
+                options:
+                    - { label: "入门", value: "beginner" }
+                    - { label: "熟悉", value: "intermediate" }
+                    - { label: "熟练", value: "advanced" }
+                    - { label: "精通", value: "expert" }
+            - # 经验时长
+                name: "experience"
+                label: "经验时长"
+                widget: "object"
+                fields:
+                    - { name: "years", label: "年", widget: "number", value_type: "int", min: 0 }
+                    - { name: "months", label: "月", widget: "number", value_type: "int", min: 0, max: 11 }
+            - { name: "projects", label: "相关项目", widget: "list", required: false, default: [] }
+            - { name: "certifications", label: "相关认证", widget: "list", required: false, default: [] }
+            - { name: "color", label: "主题颜色", widget: "string", required: false, hint: "十六进制颜色，例如 #7C3AED" }
+
+    - # 时间线
+        name: "timeline"
+        label: "时间线"
+        label_singular: "时间线"
+        folder: "src/content/timeline"
+        create: true
+        slug: "{{slug}}"
+        format: "json"
+        fields:
+            - { name: "title", label: "标题", widget: "string" }
+            - { name: "description", label: "描述", widget: "text" }
+            - # 类型
+                name: "type"
+                label: "类型"
+                widget: "select"
+                options:
+                    - { label: "教育经历", value: "education" }
+                    - { label: "工作经历", value: "work" }
+                    - { label: "项目经历", value: "project" }
+                    - { label: "成就", value: "achievement" }
+            - { name: "startDate", label: "开始日期", widget: "datetime" }
+            - { name: "endDate", label: "结束日期", widget: "datetime", required: false, hint: "留空表示仍在进行中" }
+            - { name: "location", label: "地点", widget: "string", required: false }
+            - { name: "organization", label: "组织 / 机构", widget: "string", required: false }
+            - { name: "position", label: "职位", widget: "string", required: false }
+            - { name: "skills", label: "相关技能", widget: "list", required: false, default: [] }
+            - { name: "achievements", label: "相关成就", widget: "list", required: false, default: [] }
+            - # 相关链接
+                name: "links"
+                label: "相关链接"
+                widget: "list"
+                required: false
+                fields:
+                    - { name: "name", label: "链接名称", widget: "string" }
+                    - { name: "url", label: "链接地址", widget: "string" }
+                    - # 链接类型
+                        name: "type"
+                        label: "链接类型"
+                        widget: "select"
+                        options:
+                            - { label: "证书", value: "certificate" }
+                            - { label: "项目", value: "project" }
+                            - { label: "其他", value: "other" }
+            - { name: "icon", label: "图标", widget: "string", required: false, hint: "Iconify 图标名，例如 material-symbols:code" }
+            - { name: "color", label: "主题颜色", widget: "string", required: false, hint: "十六进制颜色，例如 #7C3AED" }
+            - { name: "featured", label: "是否精选", widget: "boolean", required: false, default: false }
+
+    - # 日记
+        name: "diary"
+        label: "日记"
+        label_singular: "日记"
+        folder: "src/content/diary"
+        # 条目路径配置：{文件夹}/{文件名}
+        path: "{{slug}}/{{slug}}"
+        create: true
+        slug: "{{year}}-{{month}}-{{day}}-{{hour}}-{{minute}}"
+        format: "json"
+        media_folder: "" # 留空表示使用相对路径（图片放在日记同级目录）
+        public_folder: ""
+        fields:
+            - { name: "title", label: "标题", widget: "string", required: false }
+            - { name: "content", label: "内容", widget: "text" }
+            - { name: "date", label: "日期", widget: "datetime" }
+            - # 图片列表
+                name: "images"
+                label: "图片"
+                widget: "list"
+                required: false
+                default: []
+                field: { name: "image", label: "图片", widget: "image" }
+
+    - # 相册
+        name: "albums"
+        label: "相册"
+        label_singular: "相册"
+        folder: "src/content/albums"
+        # 条目路径配置：{文件夹}/{文件名}
+        path: "{{slug}}/{{slug}}"
+        create: true
+        slug: "{{slug}}"
+        format: "json"
+        media_folder: "" # 留空表示使用相对路径（照片放在相册同级目录）
+        public_folder: ""
+        fields:
+            - { name: "title", label: "相册标题", widget: "string" }
+            - { name: "description", label: "相册描述", widget: "text", required: false }
+            - { name: "cover", label: "相册封面", widget: "image" }
+            - { name: "date", label: "日期", widget: "datetime" }
+            - { name: "location", label: "地点", widget: "string", required: false }
+            - { name: "tags", label: "标签", widget: "list", required: false, default: [] }
+            - # 布局方式
+                name: "layout"
+                label: "布局方式"
+                widget: "select"
+                options:
+                    - { label: "网格", value: "grid" }
+                    - { label: "瀑布流", value: "masonry" }
+                    - { label: "列表", value: "list" }
+                default: "grid"
+            - { name: "columns", label: "列数", widget: "number", default: 3, value_type: "int", min: 1, max: 6 }
+            - # 照片列表
+                name: "photos"
+                label: "照片"
+                widget: "list"
+                required: false
+                fields:
+                    - { name: "src", label: "图片", widget: "image" }
+                    - { name: "alt", label: "替代文本", widget: "string", required: false }
+                    - { name: "title", label: "图片标题", widget: "string", required: false }
+                    - { name: "description", label: "图片说明", widget: "text", required: false }
+                    - { name: "tags", label: "标签", widget: "list", required: false, default: [] }
+                    - { name: "date", label: "拍摄日期", widget: "datetime", required: false }
+            - { name: "visible", label: "是否可见", widget: "boolean", default: true, required: false }
+
+# 编辑器配置
+editor:
+    # 启用预览功能
+    preview: true

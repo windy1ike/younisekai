@@ -1,0 +1,11 @@
+# younisekai 本地 / 服务器容器化部署（构建见 Dockerfile，纯静态输出 dist/）
+services:
+  younisekai-blog:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: younisekai-blog
+    ports:
+      # 仅监听本机 127.0.0.1:8070，如需对外访问请自行加反向代理
+      - "127.0.0.1:8070:80"
+    restart: unless-stopped

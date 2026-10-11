@@ -1,0 +1,116 @@
+---
+import { Icon } from "astro-icon/components";
+import { getCollection } from "astro:content";
+
+import { getCategoryList, getTagList } from "@utils/post";
+import { getResolvedSiteLang } from "@utils/language";
+import { getComponentConfig, widgetManager } from "@utils/widget";
+import { i18n, getTranslation } from "@i18n/translation";
+import I18nKey from "@i18n/i18nKey";
+import WidgetLayout from "./widgetLayout.astro";
+
+
+/**
+ * 站点运行起始日期（即站点上线日期）
+ * 想调整「站点运行天数」的统计起点，只需要修改这一行，格式：YYYY-MM-DD
+ */
+const SITE_START_DATE = "2025-01-01";
+
+const COLLAPSED_HEIGHT = "10rem";
+
+interface Props {
+    class?: string;
+    style?: string;
+    side?: string;
+}
+
+const { class: className, style, side = "default" } = Astro.props;
+
+/**
+ * 估算一段 Markdown 正文的字数
+ * 中文（含日文假名、韩文）按字符数估算，其余语言按单词数估算
+ */
+function countWords(content: string): number {
+    if (!content) return 0;
+
+    // 先去掉代码块、行内代码与 HTML 注释，避免把代码当成正文字数
+    const text = content
+        .replace(/```[\s\S]*?```/g, " ")
+        .replace(/~~~[\s\S]*?~~~/g, " ")
+        .replace(/`[^`]*`/g, " ")
+        .replace(/<!--[\s\S]*?-->/g, " ");
+
+    // 中日韩文字按「字」计
+    const cjkPattern = /[\u3040-\u30ff\u3400-\u4dbf\u4e00-\u9fff\uf900-\ufaff\uac00-\ud7af]/g;
+    const cjkCount = (text.match(cjkPattern) || []).length;
+    // 剩余内容按「词」计
+    const wordCount = (text.replace(cjkPattern, " ").match(/[A-Za-z0-9]+(?:['’-][A-Za-z0-9]+)*/g) || []).length;
+
+    return cjkCount + wordCount;
+}
+
+// 复用现有工具统计分类与标签（与 @utils/post 中的草稿过滤规则保持一致）
+const [posts, categories, tags] = await Promise.all([
+    getCollection("posts", ({ data }) => {
+        return import.meta.env.PROD ? data.draft !== true : true;
+    }),
+    getCategoryList(),
+    getTagList(),
+]);
+
+const totalWords = posts.reduce((total, post) => total + countWords(post.body ?? ""), 0);
+
+// 站点已运行天数（包含起始当天）
+const runningDays = Math.max(
+    1,
+    Math.floor((Date.now() - new Date(`${SITE_START_DATE}T00:00:00`).getTime()) / 86400000) + 1,
+);
+
+// 读取当前语言的完整翻译表：若 i18n 中补充了 siteWords / siteDays，本组件会自动生效；
+// 未补充时回退到现有最接近的 key（wordsCount / day）
+const translation = getTranslation(getResolvedSiteLang()) as unknown as Record<string, string | undefined>;
+const statsLabels = {
+    title: i18n(I18nKey.statistics),
+    posts: i18n(I18nKey.posts),
+    categories: i18n(I18nKey.categories),
+    tags: i18n(I18nKey.tags),
+    words: translation.siteWords ?? i18n(I18nKey.wordsCount),
+    days: translation.siteDays ?? i18n(I18nKey.day),
+};
+
+const statsItems = [
+    { icon: "material-symbols:article", value: posts.length, label: statsLabels.posts },
+    { icon: "material-symbols:book-2-outline-rounded", value: categories.length, label: statsLabels.categories },
+    { icon: "material-symbols:tag-rounded", value: tags.length, label: statsLabels.tags },
+    { icon: "material-symbols:lyrics", value: totalWords, label: statsLabels.words },
+];
+
+// 使用统一的组件管理器检查是否应该折叠
+const statisticsComponent = getComponentConfig("statistics");
+const isCollapsed = statisticsComponent ? widgetManager.isCollapsed(statisticsComponent, statsItems.length) : false;
+---
+
+<WidgetLayout
+    name={statsLabels.title}
+    id={`statistics-${side}`}
+    isCollapsed={isCollapsed}
+    collapsedHeight={COLLAPSED_HEIGHT}
+    class={className}
+    style={style}
+>
+    <div class="grid grid-cols-2 gap-2">
+        {statsItems.map((item) => (
+            <div class="transition flex flex-col items-center justify-center gap-0.5 rounded-xl bg-(--btn-regular-bg) py-2.5">
+                <Icon name={item.icon} class="text-(--primary) text-[1.35rem]"></Icon>
+                <div class="font-bold text-lg text-neutral-900 dark:text-neutral-100 transition">{item.value.toLocaleString("en-US")}</div>
+                <div class="text-xs text-black/50 dark:text-white/50 transition">{item.label}</div>
+            </div>
+        ))}
+    </div>
+    <!-- 站点运行天数（起始日期见上方 SITE_START_DATE 常量） -->
+    <div class="transition mt-2 flex flex-col items-center justify-center gap-0.5 rounded-xl bg-(--btn-regular-bg) py-2.5">
+        <Icon name="material-symbols:event" class="text-(--primary) text-[1.35rem]"></Icon>
+        <div class="font-bold text-lg text-neutral-900 dark:text-neutral-100 transition">{runningDays.toLocaleString("en-US")}</div>
+        <div class="text-xs text-black/50 dark:text-white/50 transition">{statsLabels.days}</div>
+    </div>
+</WidgetLayout>

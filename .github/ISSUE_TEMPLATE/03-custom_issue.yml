@@ -1,0 +1,16 @@
+name: 其他问题
+description: 不属于 Bug 反馈或功能建议的其他问题
+title: "[Other]: "
+body:
+  - type: textarea
+    id: issue-description
+    attributes:
+      label: 问题描述
+      description: 请描述你遇到的问题或想咨询的内容。
+    validations:
+      required: true
+  - type: textarea
+    id: additional-context
+    attributes:
+      label: 补充信息
+      description: 任何其他说明、截图或参考链接。

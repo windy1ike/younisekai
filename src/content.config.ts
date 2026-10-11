@@ -1,40 +1,84 @@
-import { defineCollection, z } from 'astro:content';
+import { defineCollection } from "astro:content";
+import { z } from 'astro/zod';
 import { glob } from 'astro/loaders';
 
-/**
- * 文章集合：src/content/posts/ 下的所有 .md 文件。
- * 下面的 schema 会在构建时校验每篇文章的 frontmatter，
- * 写错了会直接报错并告诉你哪个文件、哪个字段有问题。
- */
-const posts = defineCollection({
-  loader: glob({ pattern: ['**/*.md'], base: './src/content/posts' }),
-  schema: z.object({
-    /** 标题 */
-    title: z.string().max(120),
-    /** 摘要，列表页和搜索结果里显示；不写会自动从正文截取 */
-    description: z.string().max(300).optional(),
-    /** 发布日期，格式 YYYY-MM-DD */
-    pubDate: z.coerce.date(),
-    /** 最后修改日期，可选 */
-    updatedDate: z.coerce.date().optional(),
-    /** 标签，例如 ['随笔', '读书'] */
-    tags: z.array(z.string()).default([]),
-    /** 草稿：true 时不会出现在任何页面和 RSS 里 */
-    draft: z.boolean().default(false),
-  }),
+import { getCategoryPathParts } from "@utils/category";
+import { parseTags } from "@utils/tag";
+
+
+// Helper for handling dates that might be empty strings from JSON
+const optionalDateSchema = z.preprocess((arg) => {
+    if (typeof arg === "string" && arg.trim() === "") return undefined;
+    return arg;
+}, z.coerce.date().optional());
+
+const categorySchema = z.preprocess((arg) => {
+    const parts = getCategoryPathParts(arg as any);
+    return parts ?? arg;
+}, z.union([z.string(), z.array(z.string())]).optional().nullable().default(""));
+
+const tagsSchema = z.preprocess((arg) => {
+    return parseTags(arg);
+}, z.array(z.string()).optional().default([]));
+
+const postsCollection = defineCollection({
+    loader: glob({ pattern: '**/[^_]*.{md,mdx}', base: "./src/content/posts" }),
+    schema: z.object({
+        title: z.coerce.string(),
+        directoryTitle: z.coerce.string().optional().default("").transform(s => s.trim()),
+        published: optionalDateSchema,
+        updated: optionalDateSchema,
+        description: z.string().optional().default(""),
+        cover: z.string().optional().default(""),
+        coverInContent: z.boolean().optional().default(false),
+        category: categorySchema,
+        tags: tagsSchema,
+        lang: z.string().optional().default(""),
+        pinned: z.boolean().optional().default(false),
+        author: z.string().optional().default(""),
+        sourceLink: z.string().optional().default(""),
+        licenseName: z.string().optional().default(""),
+        licenseUrl: z.string().optional().default(""),
+        comment: z.boolean().optional().default(true),
+        draft: z.boolean().optional().default(false),
+
+        /* Page encryption fields */
+        encrypted: z.boolean().optional().default(false),
+        password: z.string().optional().default(""),
+
+        /* Copy protection fields */
+        copyProtection: z.object({
+            blockSelection: z.boolean().optional().default(false),
+            blockClipboard: z.boolean().optional().default(false),
+            blockContextMenu: z.boolean().optional().default(false),
+            blockDevTools: z.boolean().optional().default(false),
+        }).optional().default({
+            blockSelection: false,
+            blockClipboard: false,
+            blockContextMenu: false,
+            blockDevTools: false,
+        }),
+
+        /* Custom routeName */
+        routeName: z.string().optional(),
+
+        /* For internal use */
+        prevTitle: z.string().default(""),
+        prevSlug: z.string().default(""),
+        nextTitle: z.string().default(""),
+        nextSlug: z.string().default(""),
+    }),
 });
 
-/**
- * 单页内容：src/content/pages/ 下的 .md，用于「关于」等固定页面。
- * 想改「关于」页内容，直接编辑 src/content/pages/about.md 即可。
- */
-const pages = defineCollection({
-  loader: glob({ pattern: '**/*.md', base: './src/content/pages' }),
-  schema: z.object({
-    title: z.string(),
-    description: z.string().optional(),
-    updatedDate: z.coerce.date().optional(),
-  }),
+const specCollection = defineCollection({
+    loader: glob({ pattern: '[^_]*.{md,mdx}', base: "./src/content" }),
+    schema: z.object({
+        title: z.coerce.string().optional(),
+        description: z.string().optional(),
+    }),
 });
 
-export const collections = { posts, pages };
+export const collections = {
+    posts: postsCollection,
+    spec: specCollection,
+};

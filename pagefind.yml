@@ -1,0 +1,21 @@
+# ==============================================================================
+# Pagefind 静态搜索索引配置
+# 执行 npm run build 时会先完成 Astro 构建，再由 Pagefind 读取本文件生成搜索索引。
+# 参考自 Twilight (MIT)
+# ==============================================================================
+
+# 参与索引的文件范围（默认值为 "**/*.{html}"）。
+# 站点里的 public/FooterConfig.html 只是页脚的 HTML 注入片段，本身没有 <html> 元素，
+# 用默认 glob 会被 Pagefind 扫到并输出
+# 「1 page found without an <html> element / has no <html> element」提示。
+# Pagefind 的 glob 不支持 ! 取反，所以这里用字符类 [!F] 排除「文件名以大写 F 开头的 HTML」：
+# 站点的页面文件都是 */index.html、index.html、404.html，只有 FooterConfig.html 会被排除。
+glob: "**/[!F]*.html"
+
+# 不参与索引的元素（数学公式、搜索面板自身等）
+exclude_selectors:
+    - "span.katex"
+    - "span.katex-display"
+    - "[data-pagefind-ignore]"
+    - ".search-panel"
+    - "#search-panel"

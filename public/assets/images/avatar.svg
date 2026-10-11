@@ -1,0 +1,22 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="512" height="512" viewBox="0 0 512 512" role="img" aria-label="younisekai">
+    <defs>
+        <linearGradient id="bg" x1="0" y1="0" x2="1" y2="1">
+            <stop offset="0%" stop-color="hsl(241 62% 24%)"/>
+            <stop offset="100%" stop-color="hsl(303 74% 46%)"/>
+        </linearGradient>
+        <linearGradient id="ring" x1="0" y1="0" x2="1" y2="1">
+            <stop offset="0%" stop-color="hsl(335 92% 74%)"/>
+            <stop offset="100%" stop-color="hsl(225 86% 66%)"/>
+        </linearGradient>
+        <filter id="soften" x="-40%" y="-40%" width="180%" height="180%">
+            <feGaussianBlur stdDeviation="17.92"/>
+        </filter>
+    </defs>
+    <rect width="512" height="512" rx="122.88" fill="url(#bg)"/>
+    <g filter="url(#soften)" opacity="0.7">
+        <circle cx="184.32" cy="168.96" r="128" fill="hsl(325 90% 66%)" opacity="0.5"/>
+        <circle cx="332.8" cy="358.4" r="168.96" fill="hsl(235 80% 55%)" opacity="0.45"/>
+    </g>
+    <circle cx="256" cy="256" r="168.96" fill="none" stroke="url(#ring)" stroke-width="23.04" opacity="0.9"/>
+    <path d="M 363.52 158.72 a 128 128 0 1 1 -184.32 158.72 a 107.52 107.52 0 1 0 184.32 -158.72 Z" fill="hsl(345 96% 88%)" opacity="0.95"/>
+</svg>

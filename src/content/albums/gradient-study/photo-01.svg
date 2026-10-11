@@ -1,0 +1,23 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1200" height="630" viewBox="0 0 1200 630" role="img" aria-label="younisekai cover">
+    <defs>
+        <linearGradient id="bg" x1="0" y1="0" x2="1" y2="1">
+            <stop offset="0%" stop-color="hsl(431 58% 18%)"/>
+            <stop offset="100%" stop-color="hsl(496 70% 42%)"/>
+        </linearGradient>
+        <filter id="blur" x="-40%" y="-40%" width="180%" height="180%">
+            <feGaussianBlur stdDeviation="84"/>
+        </filter>
+        <pattern id="grid" width="60" height="60" patternUnits="userSpaceOnUse">
+            <path d="M60 0 L0 0 0 60" fill="none" stroke="#fff" stroke-opacity="0.07" stroke-width="1"/>
+        </pattern>
+        <filter id="grain">
+            <feTurbulence type="fractalNoise" baseFrequency="0.85" numOctaves="3" seed="63" result="n"/>
+            <feColorMatrix type="saturate" values="0"/>
+            <feComponentTransfer><feFuncA type="linear" slope="0.05"/></feComponentTransfer>
+        </filter>
+    </defs>
+    <rect width="1200" height="630" fill="url(#bg)"/>
+    <g filter="url(#blur)"><circle cx="1016.87" cy="405.42" r="615.83" fill="hsl(74.11 82% 57.89%)" opacity="0.29"/><circle cx="1169.2" cy="232.37" r="275.78" fill="hsl(155.45 82% 54.91%)" opacity="0.51"/><circle cx="112.81" cy="40.02" r="317.22" fill="hsl(79.57 82% 61.13%)" opacity="0.54"/></g>
+    <rect width="1200" height="630" fill="url(#grid)"/>
+    <rect width="1200" height="630" filter="url(#grain)" opacity="0.6"/>
+</svg>

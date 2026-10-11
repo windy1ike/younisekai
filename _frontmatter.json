@@ -1,0 +1,171 @@
+{
+    "$schema": "https://frontmatter.codes/frontmatter.schema.json",
+    "frontMatter.framework.id": "astro",
+    "frontMatter.preview.host": "http://localhost:4321",
+    "frontMatter.content.publicFolder": "public",
+    "frontMatter.content.pageFolders": [
+        {
+            "title": "文章",
+            "path": "[[workspace]]/src/content/posts"
+        }
+    ],
+    "frontMatter.taxonomy.contentTypes": [
+        {
+            "name": "posts",
+            "pageBundle": true,
+            "previewPath": "'posts'",
+            "filePrefix": null,
+            "clearEmpty": true,
+            "fields": [
+                {
+                    "title": "标题",
+                    "name": "title",
+                    "type": "string",
+                    "single": true
+                },
+                {
+                    "title": "侧栏目录名称",
+                    "name": "directoryTitle",
+                    "type": "string",
+                    "description": "左侧目录树中显示的名称，留空则使用标题"
+                },
+                {
+                    "title": "描述",
+                    "name": "description",
+                    "type": "string",
+                    "description": "文章摘要，用于首页卡片、RSS 与搜索引擎"
+                },
+                {
+                    "title": "发布日期",
+                    "name": "published",
+                    "type": "datetime",
+                    "default": "{{now}}",
+                    "isPublishDate": true
+                },
+                {
+                    "title": "更新日期",
+                    "name": "updated",
+                    "type": "datetime",
+                    "isModifiedDate": true
+                },
+                {
+                    "title": "封面",
+                    "name": "cover",
+                    "type": "image",
+                    "isPreviewImage": true,
+                    "description": "留空则使用默认封面；也可以填写外链图片地址"
+                },
+                {
+                    "title": "正文中显示封面",
+                    "name": "coverInContent",
+                    "type": "boolean",
+                    "default": false
+                },
+                {
+                    "title": "分类",
+                    "name": "category",
+                    "type": "list",
+                    "description": "每一项代表一级分类，例如 教程 / 快速开始"
+                },
+                {
+                    "title": "标签",
+                    "name": "tags",
+                    "type": "list"
+                },
+                {
+                    "title": "语言",
+                    "name": "lang",
+                    "type": "string",
+                    "description": "留空表示使用站点默认语言"
+                },
+                {
+                    "title": "置顶",
+                    "name": "pinned",
+                    "type": "boolean",
+                    "default": false
+                },
+                {
+                    "title": "草稿",
+                    "name": "draft",
+                    "type": "boolean",
+                    "default": false
+                },
+                {
+                    "title": "作者",
+                    "name": "author",
+                    "type": "string"
+                },
+                {
+                    "title": "来源链接",
+                    "name": "sourceLink",
+                    "type": "string"
+                },
+                {
+                    "title": "许可证名称",
+                    "name": "licenseName",
+                    "type": "string"
+                },
+                {
+                    "title": "许可证链接",
+                    "name": "licenseUrl",
+                    "type": "string"
+                },
+                {
+                    "title": "允许评论",
+                    "name": "comment",
+                    "type": "boolean",
+                    "default": true
+                },
+                {
+                    "title": "启用加密",
+                    "name": "encrypted",
+                    "type": "boolean",
+                    "default": false
+                },
+                {
+                    "title": "访问密码",
+                    "name": "password",
+                    "type": "string",
+                    "description": "仅在「启用加密」为开时生效"
+                },
+                {
+                    "title": "复制保护",
+                    "name": "copyProtection",
+                    "type": "object",
+                    "fields": [
+                        {
+                            "title": "禁止选中文本",
+                            "name": "blockSelection",
+                            "type": "boolean",
+                            "default": false
+                        },
+                        {
+                            "title": "禁止复制粘贴",
+                            "name": "blockClipboard",
+                            "type": "boolean",
+                            "default": false
+                        },
+                        {
+                            "title": "禁止右键菜单",
+                            "name": "blockContextMenu",
+                            "type": "boolean",
+                            "default": false
+                        },
+                        {
+                            "title": "禁止开发者工具快捷键",
+                            "name": "blockDevTools",
+                            "type": "boolean",
+                            "default": false
+                        }
+                    ]
+                },
+                {
+                    "title": "自定义路径",
+                    "name": "routeName",
+                    "type": "string",
+                    "description": "留空则使用文件名作为文章 URL 片段"
+                }
+            ]
+        }
+    ]
+}

@@ -1,106 +1,226 @@
-import type { CollectionEntry } from 'astro:content';
-import { withBase } from './url';
+import { type CollectionEntry, getCollection } from "astro:content";
+import { execSync } from "node:child_process";
+import fs from "node:fs";
+import path from "node:path";
 
-export type Post = CollectionEntry<'posts'>;
+import { CATEGORY_SEPARATOR, type CategoryPath, getCategoryPathParts } from "@utils/category";
+import { parseTags, type Tag } from "@utils/tag";
+import { getCategoryUrl } from "@utils/url";
+import { i18n } from "@i18n/translation";
+import I18nKey from "@i18n/i18nKey";
 
-/** 中文习惯的日期格式：2025年4月1日 */
-export function formatDate(date: Date): string {
-  return new Intl.DateTimeFormat('zh-CN', {
-    year: 'numeric',
-    month: 'long',
-    day: 'numeric',
-    timeZone: 'UTC',
-  }).format(date);
-}
 
-/** 归档用的短日期：04-01 */
-export function formatShortDate(date: Date): string {
-  return new Intl.DateTimeFormat('zh-CN', {
-    month: '2-digit',
-    day: '2-digit',
-    timeZone: 'UTC',
-  }).format(date);
-}
+type ResolvedPost = CollectionEntry<"posts"> & {
+    data: CollectionEntry<"posts">["data"] & { published: Date };
+};
 
-/** 机器可读日期，用于 <time datetime> 和 RSS */
-export function toISODate(date: Date): string {
-  return date.toISOString().slice(0, 10);
-}
-
-/** 文章链接 */
-export function postUrl(post: Post): string {
-  return withBase(`/posts/${post.id}/`);
-}
-
-/** 标签页链接 */
-export function tagUrl(tag: string): string {
-  return withBase(`/tags/${encodeURIComponent(tag)}/`);
-}
-
-/** 去掉 Markdown 语法，得到纯文本，用于摘要、搜索和阅读时长 */
-export function toPlainText(markdown = ''): string {
-  return markdown
-    .replace(/```[\s\S]*?```/g, ' ')           // 代码块
-    .replace(/~~~[\s\S]*?~~~/g, ' ')
-    .replace(/`[^`\n]*`/g, ' ')                // 行内代码
-    .replace(/!\[[^\]]*\]\([^)]*\)/g, ' ')     // 图片
-    .replace(/\[([^\]]*)\]\([^)]*\)/g, '$1')   // 链接保留文字
-    .replace(/^\s{0,3}#{1,6}\s+/gm, '')        // 标题符号
-    .replace(/^\s{0,3}>\s?/gm, '')             // 引用
-    .replace(/^\s*[-*+]\s+/gm, '')             // 无序列表
-    .replace(/^\s*\d+\.\s+/gm, '')             // 有序列表
-    .replace(/[*_~]{1,3}/g, '')                // 强调符号
-    .replace(/^\s*\|.*\|\s*$/gm, ' ')          // 表格
-    .replace(/<[^>]+>/g, ' ')                  // HTML 标签
-    .replace(/\s+/g, ' ')
-    .trim();
-}
-
-/** 摘要：优先用 frontmatter 的 description，否则从正文截取 */
-export function excerpt(post: Post, maxLength = 120): string {
-  const source = post.data.description?.trim() || toPlainText(post.body);
-  if (source.length <= maxLength) return source;
-  return `${source.slice(0, maxLength).trimEnd()}…`;
-}
-
-/** 按发布日期倒序 */
-export function sortByDate(posts: Post[]): Post[] {
-  return [...posts].sort((a, b) => b.data.pubDate.getTime() - a.data.pubDate.getTime());
-}
-
-/** 是否要带上草稿：开发时带，正式构建不带（设 BUILD_DRAFTS=1 可强制带上） */
-export function includeDrafts(): boolean {
-  return import.meta.env.DEV || process.env.BUILD_DRAFTS === '1';
-}
-
-/** 取可见文章：开发时含草稿，正式构建排除草稿 */
-export function visiblePosts(posts: Post[]): Post[] {
-  return includeDrafts() ? posts : posts.filter((post) => !post.data.draft);
-}
-
-/** 已发布的文章：草稿一律排除（RSS 这类对外产物用它） */
-export function publishedPosts(posts: Post[]): Post[] {
-  return posts.filter((post) => !post.data.draft);
-}
-
-/** 统计所有标签及出现次数，按次数倒序 */
-export function tagCounts(posts: Post[]): { tag: string; count: number }[] {
-  const map = new Map<string, number>();
-  for (const post of posts) {
-    for (const tag of post.data.tags) {
-      map.set(tag, (map.get(tag) ?? 0) + 1);
+function getFileBirthtime(filePath: string): Date {
+    try {
+        return fs.statSync(filePath).birthtime;
+    } catch {
+        return new Date();
     }
-  }
-  return [...map.entries()]
-    .map(([tag, count]) => ({ tag, count }))
-    .sort((a, b) => b.count - a.count || a.tag.localeCompare(b.tag, 'zh-CN'));
 }
 
-/** 上一篇 / 下一篇（按时间倒序的列表里，前一个是更新的） */
-export function neighbors(posts: Post[], current: Post) {
-  const index = posts.findIndex((post) => post.id === current.id);
-  return {
-    newer: index > 0 ? posts[index - 1] : undefined,
-    older: index >= 0 && index < posts.length - 1 ? posts[index + 1] : undefined,
-  };
+function getGitFirstCommitDate(filePath: string): Date | null {
+    try {
+        const output = execSync(
+            `git log --diff-filter=A --follow --format="%aI" -- "${filePath}"`,
+            { encoding: "utf-8", stdio: ["pipe", "pipe", "ignore"], timeout: 5000 },
+        );
+        const dateStr = output.split("\n").find(Boolean);
+        return dateStr ? new Date(dateStr) : null;
+    } catch {
+        return null;
+    }
+}
+
+function resolvePublishDate(post: CollectionEntry<"posts">) {
+    if (post.data.published) return;
+    const filePath = post.filePath || path.join(process.cwd(), "src", "content", "posts", post.id);
+
+    const gitDate = getGitFirstCommitDate(filePath);
+    if (gitDate && !isNaN(gitDate.getTime())) {
+        (post.data as Record<string, unknown>).published = gitDate;
+        return;
+    }
+
+    (post.data as Record<string, unknown>).published = getFileBirthtime(filePath);
+}
+
+// // Retrieve posts and sort them by publication date
+async function getRawSortedPosts(): Promise<ResolvedPost[]> {
+    const allBlogPosts = await getCollection("posts", ({ data }) => {
+        return import.meta.env.PROD ? data.draft !== true : true;
+    });
+
+    for (const post of allBlogPosts) {
+        resolvePublishDate(post);
+    }
+
+    const sorted = allBlogPosts.sort((a, b) => {
+        // 首先按置顶状态排序，置顶文章在前
+        if (a.data.pinned && !b.data.pinned) return -1;
+        if (!a.data.pinned && b.data.pinned) return 1;
+
+        // 如果置顶状态相同，则按发布日期排序
+        const dateA = new Date(a.data.published!);
+        const dateB = new Date(b.data.published!);
+        return dateA > dateB ? -1 : 1;
+    });
+
+    return sorted as ResolvedPost[];
+}
+
+export async function getSortedPosts() {
+    const sorted = await getRawSortedPosts();
+
+    for (let i = 1; i < sorted.length; i++) {
+        sorted[i].data.nextSlug = sorted[i - 1].id;
+        sorted[i].data.nextTitle = sorted[i - 1].data.title;
+    }
+    for (let i = 0; i < sorted.length - 1; i++) {
+        sorted[i].data.prevSlug = sorted[i + 1].id;
+        sorted[i].data.prevTitle = sorted[i + 1].data.title;
+    }
+
+    return sorted;
+}
+export type PostForList = {
+    id: string;
+    data: ResolvedPost["data"];
+};
+export async function getSortedPostsList(): Promise<PostForList[]> {
+    const sortedFullPosts = await getRawSortedPosts();
+
+    // delete post.body
+    const sortedPostsList = sortedFullPosts.map((post) => ({
+        id: post.id,
+        data: post.data,
+    }));
+
+    return sortedPostsList;
+}
+export async function getTagList(): Promise<Tag[]> {
+    const allBlogPosts = await getCollection<"posts">("posts", ({ data }) => {
+        return import.meta.env.PROD ? data.draft !== true : true;
+    });
+
+    const countMap: { [key: string]: number } = {};
+    allBlogPosts.forEach((post: { data: { tags: string[] } }) => {
+        const tags = parseTags(post.data.tags);
+        tags.forEach((tag: string) => {
+            if (!countMap[tag]) countMap[tag] = 0;
+            countMap[tag]++;
+        });
+    });
+
+    // sort tags
+    const keys: string[] = Object.keys(countMap).sort((a, b) => {
+        return a.toLowerCase().localeCompare(b.toLowerCase());
+    });
+
+    return keys.map((key) => ({ name: key, count: countMap[key] }));
+}
+
+export type Category = {
+    name: string;
+    count: number;
+    url: string;
+};
+
+export type CategoryTreeItem = {
+    name: string;
+    count: number;
+    url: string;
+    path: CategoryPath;
+    children: CategoryTreeItem[];
+};
+
+export async function getCategoryList(): Promise<Category[]> {
+    const allBlogPosts = await getCollection<"posts">("posts", ({ data }) => {
+        return import.meta.env.PROD ? data.draft !== true : true;
+    });
+    const count: { [key: string]: number } = {};
+    allBlogPosts.forEach((post: { data: { category: string | string[] | null } }) => {
+        const categoryParts = getCategoryPathParts(post.data.category);
+        if (!categoryParts) {
+            const ucKey = i18n(I18nKey.uncategorized);
+            count[ucKey] = count[ucKey] ? count[ucKey] + 1 : 1;
+            return;
+        }
+
+        const categoryName = categoryParts.join(CATEGORY_SEPARATOR);
+        count[categoryName] = count[categoryName] ? count[categoryName] + 1 : 1;
+    });
+
+    const lst = Object.keys(count).sort((a, b) => {
+        return a.toLowerCase().localeCompare(b.toLowerCase());
+    });
+
+    const ret: Category[] = [];
+    for (const c of lst) {
+        ret.push({
+            name: c,
+            count: count[c],
+            url: getCategoryUrl(c),
+        });
+    }
+    return ret;
+}
+
+export async function getCategoryTree(): Promise<CategoryTreeItem[]> {
+    const allBlogPosts = await getCollection<"posts">("posts", ({ data }) => {
+        return import.meta.env.PROD ? data.draft !== true : true;
+    });
+
+    type CategoryTreeInternal = {
+        name: string;
+        count: number;
+        path: CategoryPath;
+        children: Map<string, CategoryTreeInternal>;
+    };
+
+    const root = new Map<string, CategoryTreeInternal>();
+    const uncategorizedKey = i18n(I18nKey.uncategorized);
+
+    for (const post of allBlogPosts) {
+        const rawParts = getCategoryPathParts(post.data.category);
+        const categoryParts = rawParts && rawParts.length > 0 ? rawParts : [uncategorizedKey];
+        let currentLevel = root;
+        let currentPath: string[] = [];
+
+        for (const rawName of categoryParts) {
+            const name = rawName.trim();
+            if (!name) continue;
+            currentPath = [...currentPath, name];
+            let node = currentLevel.get(name);
+            if (!node) {
+                node = {
+                    name,
+                    count: 0,
+                    path: currentPath,
+                    children: new Map<string, CategoryTreeInternal>(),
+                };
+                currentLevel.set(name, node);
+            }
+            node.count += 1;
+            currentLevel = node.children;
+        }
+    }
+
+    const buildTree = (level: Map<string, CategoryTreeInternal>): CategoryTreeItem[] => {
+        const sorted = Array.from(level.values()).sort((a, b) =>
+            a.name.toLowerCase().localeCompare(b.name.toLowerCase()),
+        );
+        return sorted.map((node) => ({
+            name: node.name,
+            count: node.count,
+            path: node.path,
+            url: getCategoryUrl(node.path),
+            children: buildTree(node.children),
+        }));
+    };
+
+    return buildTree(root);
 }

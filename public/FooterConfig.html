@@ -1,0 +1,18 @@
+<!--
+  younisekai 页脚 HTML 注入片段
+
+  用法：在站点配置 younisekai.config.yaml 中把 footer.enable 设为 true 后，
+  构建时会读取本文件内容并注入到页脚区域，可用来放置备案号、版权声明、统计代码等自定义 HTML。
+  提示：
+    1. 本文件只写 HTML 片段即可，不需要 <html> / <body> 等标签；
+    2. 如果配置项 footer.customHtml 里填写了内容，则优先使用配置内容，本文件会被忽略；
+    3. 构建时会自动去掉文件中的 HTML 注释，因此注释不会渲染到页面上。
+
+  下面是中立的示例内容，替换成你自己的信息即可。
+-->
+<p>本站内容采用 <a href="https://creativecommons.org/licenses/by-nc-sa/4.0/" target="_blank" rel="noopener noreferrer">CC BY-NC-SA 4.0</a> 许可协议</p>
+
+<!--
+  备案号示例（中国大陆服务器需要，请替换为真实备案信息后再启用）：
+  <p>© 2025 younisekai · <a href="https://beian.miit.gov.cn/" target="_blank" rel="noopener noreferrer">京ICP备00000000号</a></p>
+-->

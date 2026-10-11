@@ -1,48 +1,69 @@
-# 发布到 GitHub Pages（目前设为手动触发，需要时在 Actions 页面点 "Run workflow"）
+# ==============================================================================
+# younisekai 自动部署：推送到 main 后构建并发布到 GitHub Pages
+# 参考自 Twilight (MIT)
 #
-# 为什么不是 push 自动触发：
-#   GitHub Pages 在免费账号上只能发布「公开仓库」；仓库是私有时需要 GitHub Pro。
-#   自动触发会导致每次 push 都跑一次必然失败的发布，所以先关掉。
+# 使用前请在仓库里完成两件事：
+#   1. Settings → Pages → Build and deployment → Source 选择「GitHub Actions」
+#      （否则部署步骤会因为 Pages 未启用而失败）；
+#   2. 如果站点部署在 https://<用户名>.github.io/<仓库名>/ 这样的子路径下，
+#      需要把 astro.config.mjs 里的 base 改成 "/<仓库名>/"，
+#      并把 younisekai.config.yaml 中的 siteURL 改成含仓库名前缀的完整地址。
 #
-# 满足下面任一条件后，把 push 触发器加回来即可变成自动发布：
-#   - 把仓库改成公开（Settings → General → 最下方 Change visibility）
-#   - 或账号升级到 GitHub Pro
-#
-# 启用前还要：
-#   1. 仓库 Settings → Pages → Source 选择 "GitHub Actions"
-#   2. 把 astro.config.mjs 里的 site 改成自己的地址
-#      项目站点（https://<用户名>.github.io/<仓库名>/）还需要设置 base: '/<仓库名>'
-#
-# 如果不想用 Pages，用 Vercel / Netlify 连这个私有仓库也能免费部署（见 README）。
+# 构建说明：构建步骤显式传入 GITHUB_ACTIONS=true，
+# 让构建脚本走纯静态产物目录 dist/（不要在这里设置 ENABLE_CMS_OAUTH，
+# GitHub Pages 只支持纯静态托管，后台在线登录需要 SSR 平台）。
+# ==============================================================================
+
 name: Deploy to GitHub Pages
 
 on:
+  # 推送到 main 分支时自动部署（如果默认分支不叫 main，请修改这里）
+  push:
+    branches: [main]
+  # 支持在 Actions 页面手动触发
   workflow_dispatch:
-  # push:
-  #   branches: [main]
 
+# 允许读取仓库内容，并把构建产物发布到 Pages
 permissions:
   contents: read
   pages: write
   id-token: write
 
+# 同一时间只保留一个 Pages 部署任务；不打断进行中的部署
 concurrency:
   group: pages
-  cancel-in-progress: true
+  cancel-in-progress: false
 
 jobs:
   build:
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v5
-      - uses: actions/setup-node@v5
+      - name: 检出仓库
+        uses: actions/checkout@v7
+
+      - name: 安装 Node.js
+        uses: actions/setup-node@v7
         with:
           node-version: 22
           cache: npm
-      - run: npm ci
-      - run: npm run build
-      - uses: actions/upload-pages-artifact@v4
+
+      - name: 安装依赖
+        run: npm ci
+
+      - name: 构建站点
+        run: npm run build
+        env:
+          # 纯静态构建：不设置 ENABLE_CMS_OAUTH，astro.config.mjs 就不会挂 SSR 适配器；
+          # GITHUB_ACTIONS=true 同时让 scripts/build-with-pagefind.cjs 把产物目录判定为 dist/
+          GITHUB_ACTIONS: "true"
+
+      - name: 配置 Pages
+        uses: actions/configure-pages@v6
+
+      - name: 上传构建产物
+        uses: actions/upload-pages-artifact@v4
         with:
+          # npm run build 的产物目录（已包含 Pagefind 搜索索引）
           path: dist
 
   deploy:
@@ -52,5 +73,6 @@ jobs:
       name: github-pages
       url: ${{ steps.deployment.outputs.page_url }}
     steps:
-      - id: deployment
-        uses: actions/deploy-pages@v4
+      - name: 发布到 GitHub Pages
+        id: deployment
+        uses: actions/deploy-pages@v5

@@ -1,0 +1,27 @@
+{
+    "title": "开始搭建 younisekai",
+    "description": "从一份上游开源模板出发，重新设计中文字体、目录结构和内容集合，目标是做一个「写完 Markdown 就能发」的静态博客。",
+    "type": "project",
+    "startDate": "2025-09-15",
+    "endDate": "",
+    "skills": ["Astro", "Svelte", "Tailwind CSS"],
+    "achievements": [
+        "重写全部示例内容为中文",
+        "补齐项目、技能、历程、日记、相册五类数据页面"
+    ],
+    "links": [
+        {
+            "name": "在线预览",
+            "url": "https://example.com",
+            "type": "project"
+        },
+        {
+            "name": "代码仓库",
+            "url": "https://example.com/younisekai/template",
+            "type": "project"
+        }
+    ],
+    "icon": "material-symbols:code",
+    "color": "#7C3AED",
+    "featured": true
+}

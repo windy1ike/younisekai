@@ -1,0 +1,14 @@
+{
+    "title": "younisekai 模板本体",
+    "description": "本项目自身：一个带后台管理的静态博客模板，支持嵌套分类、文章加密、复制保护和完整的数据集合页面。",
+    "image": "./cover.svg",
+    "category": "website",
+    "techStack": ["Astro", "Svelte", "Tailwind CSS", "TypeScript"],
+    "status": "in-progress",
+    "demoUrl": "https://example.com",
+    "sourceUrl": "https://example.com/younisekai/template",
+    "startDate": "2025-09-15",
+    "endDate": "",
+    "featured": true,
+    "tags": ["开源项目", "博客模板"]
+}
