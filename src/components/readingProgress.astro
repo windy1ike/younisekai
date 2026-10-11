@@ -80,11 +80,11 @@
                 // 文章容器在文档中的起点与高度
                 const start = scrollTop + article.getBoundingClientRect().top;
                 const total = article.offsetHeight - viewport;
-                progress = total <= 8 ? 1 : (scrollTop - start) / total;
+                progress = total <= 8 ? 0 : (scrollTop - start) / total;
             } else {
                 // 非文章页：整页滚动进度
                 const total = document.documentElement.scrollHeight - viewport;
-                progress = total <= 8 ? 1 : scrollTop / total;
+                progress = total <= 8 ? 0 : scrollTop / total;
             }
 
             progress = Math.min(1, Math.max(0, progress));
