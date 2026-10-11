@@ -1,4 +1,6 @@
 ---
+
+import { url } from "@utils/url";
 import { LinkPresets } from "@constants/link-presets";
 import { LinkPreset } from "@/types/config";
 import { sortedAlbums } from "@utils/albums";
@@ -35,7 +37,7 @@ const albumsData = sortedAlbums.filter(album => album.visible);
                     <article
                         class="album-card group bg-white dark:bg-neutral-900 rounded-lg overflow-hidden shadow-sm hover:shadow-md transition-all duration-300 border border-neutral-200 dark:border-neutral-800"
                     >
-                        <a href={`/albums/${album.id}/`} class="block">
+                        <a href={url(`/albums/${album.id}/`)} class="block">
                             <!-- 封面图片 -->
                             <div class="aspect-4/3 overflow-hidden bg-neutral-100 dark:bg-neutral-700">
                                 <ImageWrapper

@@ -1,4 +1,6 @@
 ---
+
+import { resolveUrl } from "@utils/url";
 import { getEntry, render } from "astro:content";
 
 import { LinkPresets } from "@constants/link-presets";
@@ -58,7 +60,7 @@ const shuffledItems = shuffleArray(items);
                 {shuffledItems.map((item) => (
                     <a href={item.siteurl} target="_blank" rel="noopener noreferrer" class="menu-card group flex flex-row items-center p-4 rounded-xl border transition-all duration-300 gap-4">
                         <div class="icon-wrapper w-20 h-20 shrink-0 flex items-center justify-center rounded-full transition-all duration-300 overflow-hidden bg-zinc-200 dark:bg-zinc-900">
-                            <img src={item.imgurl} alt={item.title} class="w-full h-full object-cover transition duration-300 group-hover:scale-110" />
+                            <img src={resolveUrl(item.imgurl)} alt={item.title} class="w-full h-full object-cover transition duration-300 group-hover:scale-110" />
                         </div>
                         <div class="flex flex-col justify-center overflow-hidden">
                             <h2 class="text-lg font-bold text-neutral-900 dark:text-neutral-100 group-hover:text-(--primary) transition-colors duration-300 truncate">

@@ -27,6 +27,7 @@ import { pluginCopyButton } from "./src/plugins/expressive-code/copy-button.js";
 import { pluginLanguageBadge } from "./src/plugins/expressive-code/language-badge.ts";
 import { GithubCardComponent } from "./src/plugins/rehype-component-github-card.mjs";
 import { rehypeAdmonitions } from "./src/plugins/rehype-admonitions.mjs";
+import { rehypeBasePath } from "./src/plugins/rehype-base-path.mjs";
 import { rehypeMermaid } from "./src/plugins/rehype-mermaid.mjs";
 import { rehypeLazyLoadMedia } from "./src/plugins/rehype-lazy-load-media.mjs";
 import { parseDirectiveNode } from "./src/plugins/remark-directive-rehype.js";
@@ -59,10 +60,20 @@ const adapter = !enableCmsOauth
         )
     );
 
+/**
+ * 站点部署的「基准路径」：子路径部署时所有资源与链接都要带上它。
+ *
+ *   - 部署在根目录（自定义域名，或仓库名为 <用户名>.github.io）：用 "/"
+ *   - GitHub Pages 项目站点 https://<用户名>.github.io/<仓库名>/：用 "/<仓库名>/"
+ *
+ * 同时记得把 younisekai.config.yaml 里的 siteURL 改成带上同一前缀的完整地址。
+ */
+const BASE_PATH = "/younisekai/";
+
 // Ref: https://astro.build/config
 export default defineConfig({
     site: siteConfig.siteURL,
-    base: "/",
+    base: BASE_PATH,
     trailingSlash: "always",
     adapter: adapter,
     integrations: [
@@ -222,6 +233,8 @@ export default defineConfig({
             rehypeAdmonitions,
             rehypeMermaid,
             rehypeLazyLoadMedia,
+            // 放在最后：把正文里手写的根绝对路径补上 base 前缀（子路径部署用）
+            [rehypeBasePath, { base: BASE_PATH }],
         ],
     },
     vite: {

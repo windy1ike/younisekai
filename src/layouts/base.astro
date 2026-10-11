@@ -139,11 +139,15 @@ const siteOrigin = Astro.site ?? new URL(Astro.url.origin);
 const canonicalURL = new URL(Astro.url.pathname, siteOrigin).href;
 
 // 社交分享图：只接受 /public 下的绝对路径或完整 URL，
-// 正文里以 ./ 开头的相对路径封面由文章页自行解析后传入
-const ogImageURL =
-    image && (image.startsWith("/") || /^https?:\/\//.test(image))
-        ? new URL(image, siteOrigin).href
-        : undefined;
+// 正文里以 ./ 开头的相对路径封面由文章页自行解析后传入。
+// 注意：/public 路径在子路径部署时要带上 base 前缀，否则分享图会指向站点根目录。
+const ogImageURL = (() => {
+    if (!image) return undefined;
+    if (/^https?:\/\//.test(image)) return image;
+    if (!image.startsWith("/")) return undefined;
+    const basePath = import.meta.env.BASE_URL.replace(/\/+$/, "");
+    return new URL(`${basePath}${image}`, siteOrigin).href;
+})();
 ---
 
 <!DOCTYPE html>

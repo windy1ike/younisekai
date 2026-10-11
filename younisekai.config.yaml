@@ -9,9 +9,13 @@
 
 # 站点配置
 site:
-    # 站点 URL（以斜杠结尾）
-    # 注意：部署前请务必改成你自己的域名，否则 RSS / Atom / OG 等会指向错误地址
-    siteURL: "https://younisekai.example.com/"
+    # 站点 URL（必须以斜杠结尾）
+    # ⚠️ 这是 RSS / Atom / sitemap / canonical / 社交分享卡里用到的绝对地址，务必与真实部署地址一致：
+    #   - 自定义域名：            https://example.com/
+    #   - GitHub Pages 项目站点： https://<用户名>.github.io/<仓库名>/
+    #     （项目站点还要把 astro.config.mjs 里的 base 改成 "/<仓库名>/"）
+    #   - Vercel / Netlify：     平台分配的域名或自定义域名，根路径用 https://xxx.vercel.app/
+    siteURL: "https://windy1ike.github.io/younisekai/"
     # 站点标题
     title: "younisekai"
     # 站点副标题

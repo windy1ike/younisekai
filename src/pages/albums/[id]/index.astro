@@ -1,4 +1,6 @@
 ---
+
+import { url } from "@utils/url";
 import type { AlbumGroup } from "@utils/albums";
 import { sortedAlbums } from "@utils/albums";
 import { i18n } from "@i18n/translation";
@@ -30,7 +32,7 @@ if (!album) {
 <GridLayout title={album.title} description={album.description || album.title}>
     <div class="flex w-full rounded-(--radius-large) overflow-hidden relative min-h-32">
         <div class="card-base z-10 px-9 py-6 relative w-full">
-            <BackwardButton href="/albums/" text={i18n(I18nKey.albumsBackToList)} />
+            <BackwardButton href={url("/albums/")} text={i18n(I18nKey.albumsBackToList)} />
             <!-- 相册标题信息 -->
             <header class="mb-8">
                 <h1 class="text-3xl font-bold text-neutral-900 dark:text-neutral-100 mb-3">

@@ -286,16 +286,26 @@ npm run dev             # 然后访问 http://localhost:4321/admin/
 
 `npm run build` 产出的 `dist/` 就是整站，纯静态（除非你开了 `ENABLE_CMS_OAUTH`）。
 
-**部署前记得改 `younisekai.config.yaml` 里的 `siteURL`**，否则 RSS / sitemap / 绝对链接会指向示例域名。
+**部署前必须让「两处地址」与真实部署地址一致**，否则资源与站内链接会 404：
+
+| 位置 | 改什么 | 根目录部署 | 子路径部署（GitHub Pages 项目站点） |
+| --- | --- | --- | --- |
+| `younisekai.config.yaml` | `site.siteURL` | `https://example.com/` | `https://<用户名>.github.io/<仓库名>/` |
+| `astro.config.mjs` | `BASE_PATH`（同时用作 `base`） | `"/"` | `"/<仓库名>/"` |
+
+`BASE_PATH` 会被 Astro 用在资源路径上；正文里手写的 `/posts/xxx/`、`/assets/x.png` 以及配置里的
+`profile.links`、`announcement.link.url` 这类站内地址，也由 `src/plugins/rehype-base-path.mjs`
+与 `resolveUrl()` 自动补上前缀，所以文章内容不需要改写法。
 
 ### GitHub Pages
 
 仓库里带了 `.github/workflows/deploy.yml`：
 
 1. 仓库 **Settings → Pages → Build and deployment → Source** 选 **GitHub Actions**
-2. 改 `younisekai.config.yaml` 里的 `siteURL`；如果是 `https://<用户名>.github.io/<仓库名>/` 这种项目站点，再在 `astro.config.mjs` 里加 `base: '/<仓库名>'`
+2. 按上表确认 `siteURL` 与 `BASE_PATH`（`https://<用户名>.github.io/<仓库名>/` 这种项目站点必须加前缀）
 3. 推到 `main` 分支（或在 Actions 里手动触发 `deploy`），剩下的自动完成
-4. 想用自定义域名，就在 `public/` 下加一个 `CNAME` 文件写上域名，并把 DNS 的 CNAME 记录指向 `<用户名>.github.io`
+4. 想用自定义域名，就在 `public/` 下加一个 `CNAME` 文件写上域名，并把 DNS 的 CNAME 记录指向 `<用户名>.github.io`，
+   然后把 `siteURL` 改成 `https://你的域名/`、`BASE_PATH` 改回 `"/"`
 
 ### Cloudflare Pages / Netlify / Vercel
 

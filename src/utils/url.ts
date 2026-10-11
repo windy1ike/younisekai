@@ -77,3 +77,15 @@ export function getFileDirFromPath(filePath: string): string {
 export function url(path: string) {
     return joinUrl("", import.meta.env.BASE_URL, path);
 }
+
+/**
+ * 解析「配置里写死的链接」：
+ *   - 以单个 / 开头的站内绝对路径 → 补上 base 前缀（子路径部署可用）
+ *   - http(s):// 之类的外部地址、锚点、相对路径 → 原样返回
+ *
+ * 用于 profile.links、announcement.link.url 这类来自 younisekai.config.yaml 的地址。
+ */
+export function resolveUrl(path: string): string {
+    if (!path) return path;
+    return path.startsWith("/") && !path.startsWith("//") ? url(path) : path;
+}
