@@ -6,7 +6,7 @@ category:
 tags:
   - 名字
   - KazeYouni
-cover: ''
+cover: /assets/images/covers/cover-01.svg
 published: 2026-10-12
 pinned: false
 draft: false
