@@ -11,7 +11,11 @@ published: 2026-10-12
 pinned: false
 draft: false
 comment: true
-copyProtection: null
+copyProtection:
+  blockSelection: false
+  blockClipboard: false
+  blockContextMenu: false
+  blockDevTools: true
 ---
 
 前言：我小时候是个喜欢耍帅的小屁孩，又很中二，很早就接触网络了，所以起过很多那时候的自己看着很帅实际很幼稚的网名，我记得当时特别钟意“凌”字和“风”字，所以就隔几天就造个两字或者三字词语出来，比如“凌风”“凌羽”“凌若风”这些东西。
