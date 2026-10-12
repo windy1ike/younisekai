@@ -21,6 +21,20 @@ const tagsSchema = z.preprocess((arg) => {
     return parseTags(arg);
 }, z.array(z.string()).optional().default([]));
 
+const copyProtectionSchema = z.preprocess((arg) => {
+    return arg === null ? undefined : arg;
+}, z.object({
+    blockSelection: z.boolean().optional().default(false),
+    blockClipboard: z.boolean().optional().default(false),
+    blockContextMenu: z.boolean().optional().default(false),
+    blockDevTools: z.boolean().optional().default(false),
+}).optional().default({
+    blockSelection: false,
+    blockClipboard: false,
+    blockContextMenu: false,
+    blockDevTools: false,
+}));
+
 const postsCollection = defineCollection({
     loader: glob({ pattern: '**/[^_]*.{md,mdx}', base: "./src/content/posts" }),
     schema: z.object({
@@ -47,17 +61,7 @@ const postsCollection = defineCollection({
         password: z.string().optional().default(""),
 
         /* Copy protection fields */
-        copyProtection: z.object({
-            blockSelection: z.boolean().optional().default(false),
-            blockClipboard: z.boolean().optional().default(false),
-            blockContextMenu: z.boolean().optional().default(false),
-            blockDevTools: z.boolean().optional().default(false),
-        }).optional().default({
-            blockSelection: false,
-            blockClipboard: false,
-            blockContextMenu: false,
-            blockDevTools: false,
-        }),
+        copyProtection: copyProtectionSchema,
 
         /* Custom routeName */
         routeName: z.string().optional(),
