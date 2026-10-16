@@ -54,8 +54,8 @@ description: YouniSekai 是 KazeYouni 的个人博客：写代码，也写点故
 
 站内文章的版权归属与许可方式，以每篇文章底部显示的许可协议为准；未特别标注时，默认沿用站点配置中的许可协议。
 
-|  |
-
 ## 联系与反馈
 
-- 模板本身的问题、建议与勘误，请在代码仓库提交 issue；
+- 模板本身的问题、建议与勘误，请在代码仓库提交 issue:
+
+   ::github{repo="windy1ike/younisekai"}
